@@ -5,52 +5,52 @@ import styles from './styles.module.css';
 
 type FeatureItem = {
   title: string;
-  Svg: React.ComponentType<React.ComponentProps<'svg'>>;
+  icon: string;
   description: ReactNode;
 };
 
 const FeatureList: FeatureItem[] = [
   {
-    title: 'Easy to Use',
-    Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
+    title: 'Multi-Agent Studio & Custom Personas',
+    icon: '🤖',
     description: (
       <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
+        Deploy specialized assistant personas (Sales, VIP Support, Billing) with custom system prompts,
+        LLM provider selection (Gemini, OpenAI, Claude, Groq), and fine-grained Access Groups.
       </>
     ),
   },
   {
-    title: 'Focus on What Matters',
-    Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
+    title: 'Omnichannel Commerce & Paystack',
+    icon: '💳',
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
+        Turn customer conversations into instant checkouts across WhatsApp Cloud API, Telegram Bot,
+        and embeddable Website Widget with automated Paystack payment verification.
       </>
     ),
   },
   {
-    title: 'Powered by React',
-    Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
+    title: '100% Self-Hosted & Private',
+    icon: '🔒',
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+        Zero lock-in. Run on Docker, Coolify, or any VPS. Your customer data, chat transcripts,
+        and RAG knowledge base stay 100% private to your self-hosted instance.
       </>
     ),
   },
 ];
 
-function Feature({title, Svg, description}: FeatureItem) {
+function Feature({title, icon, description}: FeatureItem) {
   return (
     <div className={clsx('col col--4')}>
-      <div className="text--center">
-        <Svg className={styles.featureSvg} role="img" />
+      <div className="text--center margin-bottom--md">
+        <span style={{fontSize: '3.5rem'}} role="img">{icon}</span>
       </div>
       <div className="text--center padding-horiz--md">
         <Heading as="h3">{title}</Heading>
-        <p>{description}</p>
+        <p className="text--muted">{description}</p>
       </div>
     </div>
   );
@@ -58,7 +58,7 @@ function Feature({title, Svg, description}: FeatureItem) {
 
 export default function HomepageFeatures(): ReactNode {
   return (
-    <section className={styles.features}>
+    <section className={styles.features} style={{padding: '4rem 0'}}>
       <div className="container">
         <div className="row">
           {FeatureList.map((props, idx) => (

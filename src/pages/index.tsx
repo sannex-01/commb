@@ -17,11 +17,16 @@ function HomepageHeader() {
           {siteConfig.title}
         </Heading>
         <p className="hero__subtitle">{siteConfig.tagline}</p>
-        <div className={styles.buttons}>
+        <div className={styles.buttons} style={{display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap'}}>
           <Link
             className="button button--secondary button--lg"
             to="/docs/intro">
-            Docusaurus Tutorial - 5min ⏱️
+            Explore Documentation &rarr;
+          </Link>
+          <Link
+            className="button button--outline button--secondary button--lg"
+            to="/docs/getting-started/quickstart">
+            🚀 Quickstart (Docker)
           </Link>
         </div>
       </div>
@@ -33,8 +38,8 @@ export default function Home(): ReactNode {
   const {siteConfig} = useDocusaurusContext();
   return (
     <Layout
-      title={`Hello from ${siteConfig.title}`}
-      description="Description will go into a meta tag in <head />">
+      title="Open-Source Autonomous Conversational Commerce & Multi-Agent Studio"
+      description="Official Documentation, Architecture Guides, and Release Notes for AICB.">
       <HomepageHeader />
       <main>
         <HomepageFeatures />

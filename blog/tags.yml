@@ -1,19 +1,15 @@
-facebook:
-  label: Facebook
-  permalink: /facebook
-  description: Facebook tag description
+release:
+  label: Release
+  description: Platform version releases and updates.
 
-hello:
-  label: Hello
-  permalink: /hello
-  description: Hello tag description
+minor:
+  label: Minor Version
+  description: Feature additions and enhancements.
 
-docusaurus:
-  label: Docusaurus
-  permalink: /docusaurus
-  description: Docusaurus tag description
+multi-agent:
+  label: Multi-Agent
+  description: Multi-Agent Studio and persona configurations.
 
-hola:
-  label: Hola
-  permalink: /hola
-  description: Hola tag description
+channels:
+  label: Channels
+  description: WhatsApp, Telegram, and Website Widget integrations.

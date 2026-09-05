@@ -3,19 +3,16 @@ import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
-  title: 'Sannex AgentOS & AICB Docs',
-  tagline: 'Autonomous Conversational Commerce, Multi-Agent Studio & Telemetry Infrastructure',
+  title: 'AICB Documentation',
+  tagline: 'Autonomous Open-Source AI Conversational Commerce & Multi-Agent Studio',
   favicon: 'img/favicon.ico',
 
-  future: {
-    v4: true,
-  },
 
   url: 'https://agentos.aicb.sannex.ng',
   baseUrl: '/',
 
   organizationName: 'sannex-tech',
-  projectName: 'aicb-docs',
+  projectName: 'aicb',
 
   onBrokenLinks: 'warn',
 
@@ -34,7 +31,7 @@ const config: Config = {
         },
         blog: {
           routeBasePath: 'releases',
-          blogTitle: 'AICB Platform Releases & Changelog',
+          blogTitle: 'AICB Platform Releases & Changelogs',
           blogDescription: 'Official version updates, new features, and security patches for AICB instances.',
           showReadingTime: false,
           postsPerPage: 'ALL',
@@ -52,9 +49,9 @@ const config: Config = {
       respectPrefersColorScheme: true,
     },
     navbar: {
-      title: 'AgentOS',
+      title: 'AICB Docs',
       logo: {
-        alt: 'AgentOS Logo',
+        alt: 'AICB Logo',
         src: 'img/logo.svg',
       },
       items: [
@@ -88,7 +85,7 @@ const config: Config = {
               to: '/docs/intro',
             },
             {
-              label: 'Quickstart (Docker)',
+              label: 'Quickstart with Docker',
               to: '/docs/getting-started/quickstart',
             },
             {
@@ -96,43 +93,43 @@ const config: Config = {
               to: '/docs/features/agents-studio',
             },
             {
-              label: 'Python & JS SDKs',
-              to: '/docs/sdk/overview',
+              label: 'Messaging Channels',
+              to: '/docs/features/channels',
             },
           ],
         },
         {
-          title: 'Ecosystem',
+          title: 'AICB Ecosystem',
           items: [
             {
-              label: 'AgentOS Portal',
-              href: 'https://agentos.aicb.sannex.ng',
-            },
-            {
-              label: 'AICB GitHub',
+              label: 'AICB GitHub Repository',
               href: 'https://github.com/sannex-tech/aicb',
             },
             {
-              label: 'Sannex Agent SDK',
-              href: 'https://github.com/sannex-tech/sannex-agent',
+              label: 'Sannex Agent SDK (PyPI)',
+              href: 'https://pypi.org/project/sannex-agent/',
+            },
+            {
+              label: 'Sannex Agent SDK (npm)',
+              href: 'https://www.npmjs.com/package/@sannex/agent',
             },
           ],
         },
         {
-          title: 'Community',
+          title: 'Community & Support',
           items: [
             {
-              label: 'Releases',
+              label: 'Platform Releases',
               to: '/releases',
             },
             {
-              label: 'Sponsor on GitHub',
+              label: 'Sponsor AICB on GitHub',
               href: 'https://github.com/sponsors/sannex',
             },
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} Sannex Tech LTD. Open source under MIT License.`,
+      copyright: `Copyright © ${new Date().getFullYear()} Sannex Tech LTD. AICB is free and open source under the MIT License.`,
     },
     prism: {
       theme: prismThemes.github,
