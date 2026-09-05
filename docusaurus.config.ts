@@ -11,7 +11,7 @@ const config: Config = {
   url: 'https://agentos.aicb.sannex.ng',
   baseUrl: '/',
 
-  organizationName: 'sannex-tech',
+  organizationName: 'sannex-01',
   projectName: 'aicb',
 
   onBrokenLinks: 'warn',
@@ -20,6 +20,11 @@ const config: Config = {
     defaultLocale: 'en',
     locales: ['en'],
   },
+
+  markdown: {
+    mermaid: true,
+  },
+  themes: ['@docusaurus/theme-mermaid'],
 
   presets: [
     [

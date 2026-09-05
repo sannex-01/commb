@@ -21,3 +21,15 @@ channels:
 commerce:
   label: Commerce
   description: Product catalog, orders, and payment integrations.
+
+telemetry:
+  label: Telemetry
+  description: AgentOS remote analytics and telemetry synchronization.
+
+sdk:
+  label: SDK
+  description: Sannex Agent SDK packages for Python and Node.
+
+changelog:
+  label: Changelog
+  description: Detailed release changelogs and upgrade notes.
