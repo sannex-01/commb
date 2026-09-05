@@ -12,7 +12,7 @@ description: Deploy AICB on Coolify or any cloud server with automated SSL.
 
 1. Open your Coolify Dashboard and click **+ Create New Resource** &rarr; **Application**.
 2. Select **Public / Private Git Repository**.
-3. Repository URL: `https://github.com/sannex-tech/aicb.git`
+3. Repository URL: `https://github.com/sannex-01/aicb.git`
 4. Branch: `main`
 5. Build Pack: **Docker Compose**
 

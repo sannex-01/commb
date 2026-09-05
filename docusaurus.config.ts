@@ -63,12 +63,12 @@ const config: Config = {
         },
         {to: '/releases', label: 'Releases & Changelog', position: 'left'},
         {
-          href: 'https://github.com/sannex-tech/aicb',
+          href: 'https://github.com/sannex-01/aicb',
           label: 'GitHub',
           position: 'right',
         },
         {
-          href: 'https://github.com/sponsors/sannex',
+          href: 'https://github.com/sponsors/sannex-01',
           label: '❤️ Sponsor',
           position: 'right',
         },
@@ -103,7 +103,7 @@ const config: Config = {
           items: [
             {
               label: 'AICB GitHub Repository',
-              href: 'https://github.com/sannex-tech/aicb',
+              href: 'https://github.com/sannex-01/aicb',
             },
             {
               label: 'Sannex Agent SDK (PyPI)',

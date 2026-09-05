@@ -22,7 +22,7 @@ Get a production-ready AICB instance running in under 2 minutes. You can deploy 
 
 ```bash
 # Clone the open-source repository
-git clone https://github.com/sannex-tech/aicb.git
+git clone https://github.com/sannex-01/aicb.git
 cd aicb
 
 # Copy environment variables template
