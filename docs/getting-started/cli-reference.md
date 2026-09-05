@@ -68,5 +68,6 @@ Displays the currently installed AICB platform release version.
 
 ```bash
 aicb version
-# Output: AICB Platform v0.2.1
+# Output: AICB Platform v0.1.0
 ```
+

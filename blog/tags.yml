@@ -2,6 +2,10 @@ release:
   label: Release
   description: Platform version releases and updates.
 
+initial:
+  label: Initial Release
+  description: Foundation release of AICB.
+
 minor:
   label: Minor Version
   description: Feature additions and enhancements.
@@ -13,3 +17,7 @@ multi-agent:
 channels:
   label: Channels
   description: WhatsApp, Telegram, and Website Widget integrations.
+
+commerce:
+  label: Commerce
+  description: Product catalog, orders, and payment integrations.
