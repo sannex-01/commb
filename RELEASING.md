@@ -29,10 +29,10 @@ Remotes are already pointed at the new locations. After creating the two empty
 GitHub repos (no README, no .gitignore — the history supplies them):
 
 ```bash
-cd ~/Documents/Projects/commb          # or aicb, if not yet renamed
+cd ~/Documents/Projects/commb
 git push -u origin main
 
-cd ~/Documents/Projects/commb-agent    # or sannex-agent
+cd ~/Documents/Projects/commb-agent
 git push -u origin main
 ```
 
