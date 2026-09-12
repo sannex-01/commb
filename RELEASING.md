@@ -38,49 +38,33 @@ git push -u origin main
 
 ---
 
-## Publish order (this is not arbitrary)
+## Publish order
 
-The steps below depend on each other, so run them in this order:
+The packages are independent — `commb-agent` is only an **optional** extra of
+`commb` (`pip install commb[telemetry]`), never a hard dependency, because a
+self-hosted CommB must be able to run without ever phoning home. So there is no
+required ordering and no cross-registry waiting:
 
 ```
-1. PyPI: commb-agent   ──┐
-2. PyPI: commb           │  commb depends on commb-agent>=0.3.0
-3. npm:  @commb/agent    │  Docker installs commb-agent from PyPI
-4. Docker: samakins/commb ┘
+PyPI:   commb           (server, AGPL-3.0)
+PyPI:   commb-agent     (telemetry SDK, MIT — optional extra)
+npm:    @commb/agent    (telemetry SDK, MIT)
+Docker: samakins/commb  (builds from requirements.txt; no SDK needed)
 ```
 
-**The Docker image cannot be built until `commb-agent` is live on PyPI.**
-`Dockerfile` line 32 runs `pip install -r requirements.txt`, which resolves
-`commb-agent>=0.3.0` from the registry. Build it before that upload lands and it
-fails with `No matching distribution found for commb-agent>=0.3.0`. Publishing
-`commb` before `commb-agent` is likewise a broken release: anyone installing it
-gets an unresolvable dependency.
-
-npm (step 3) is independent of the Python packages and can happen any time.
+> **Do not add `commb-agent` to `requirements.txt`.** It belongs only in
+> `pyproject.toml` under `[project.optional-dependencies] telemetry`. Listing it
+> as a hard requirement makes the Docker build fail (`No matching distribution
+> found`) whenever the SDK version is not yet on PyPI, and silently turns
+> phone-home into a mandatory install for self-hosters.
 
 ---
 
-## Manual publish — Python (`commb-agent` first, then `commb`)
+## Manual publish — Python
 
 Create an API token at <https://pypi.org/manage/account/token/>. For the very
 first upload the token must be account-scoped, since the project does not exist
 yet; afterwards, replace it with a project-scoped token or trusted publishing.
-
-```bash
-# --- SDK: publish this FIRST, commb depends on it ---
-cd ~/Documents/Projects/commb-agent/packages/python
-rm -rf dist build
-python -m build                       # -> dist/commb_agent-0.3.0*
-python -m twine check dist/*
-python -m twine upload dist/*
-```
-
-Wait for it to resolve before continuing — PyPI's index can lag the upload by a
-few moments:
-
-```bash
-pip index versions commb-agent        # must list 0.3.0 before you go on
-```
 
 ```bash
 # --- main app ---
@@ -106,11 +90,21 @@ python -m twine upload --repository testpypi dist/*
 python -m twine upload dist/*
 ```
 
+```bash
+# --- telemetry SDK (independent of the server release) ---
+cd ~/Documents/Projects/commb-agent/packages/python
+rm -rf dist build
+python -m build                       # -> dist/commb_agent-0.3.0*
+python -m twine check dist/*
+python -m twine upload dist/*
+```
+
 Verify:
 
 ```bash
 pip index versions commb
 pip install commb                     # then: commb version
+pip install 'commb[telemetry]'        # only when pointing at a collector
 ```
 
 ## Manual publish — npm (`@commb/agent`)
@@ -128,9 +122,9 @@ on a free account.
 
 ## Manual publish — Docker (`samakins/commb`)
 
-> **Requires `commb-agent` to already be on PyPI.** The image installs it from
-> the registry during the build, so this step must come last. If it is not yet
-> published the build fails at the `pip install -r requirements.txt` layer.
+> The image installs only `requirements.txt`, which deliberately excludes the
+> telemetry SDK — so it builds regardless of what is on PyPI, and the resulting
+> container never phones home.
 
 ```bash
 cd ~/Documents/Projects/commb
@@ -182,19 +176,10 @@ package never publishes the other:
 | `py-v*` in `commb-agent` | PyPI `commb-agent` |
 | `js-v*` in `commb-agent` | npm `@commb/agent` |
 
-> **Ordering hazard on version bumps.** `pypi-publish.yml` and `docker-publish.yml`
-> are separate workflows triggered by the same `v*` tag, with no `needs:` between
-> them — they run concurrently. The same dependency from the first release still
-> applies: if a release bumps `commb-agent` and the Docker build starts before that
-> new version is on PyPI, the image build fails (or silently pins the older SDK,
-> depending on the requirement floor).
->
-> So when a release moves both packages: push `py-v*` in `commb-agent` first, wait
-> for PyPI, then push `v*` in `commb`. A `commb`-only release has no such
-> constraint.
->
-> Note also that `docker-publish.yml` triggers on every push to `main`, not just
-> on tags — so `main` must never reference an unpublished `commb-agent` version.
+`pypi-publish.yml` and `docker-publish.yml` are separate workflows triggered by
+the same `v*` tag and run concurrently. That is safe: the Docker image does not
+install the SDK, so neither job depends on the other. Note that
+`docker-publish.yml` also triggers on every push to `main`, not just on tags.
 
 ```bash
 git tag v0.2.1 && git push origin v0.2.1          # commb
