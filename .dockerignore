@@ -1,0 +1,18 @@
+# Without this, `COPY . ./` ships the HOST's node_modules into the image,
+# overwriting the ones npm just installed for the container's platform. On a
+# Windows host those binaries are unusable in Alpine, and the copy alone adds
+# hundreds of megabytes to the build context.
+node_modules
+build
+.docusaurus
+
+.git
+.gitignore
+Dockerfile
+.dockerignore
+
+*.log
+npm-debug.log*
+.DS_Store
+.env
+.env.*
