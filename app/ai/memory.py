@@ -7,7 +7,7 @@ from app.core.config import settings
 from app.core.logger import logger
 from app.models.session import ConversationSession, MessageLog
 from app.models.config_override import ConfigOverride
-from app.telemetry.client import telemetry_client
+from app.cloud_sync.client import cloud_client
 
 
 class MemoryManager:
@@ -103,7 +103,7 @@ class MemoryManager:
         db.add(log_entry)
 
         # Track chat_transcript telemetry event
-        telemetry_client.track(
+        cloud_client.track(
             channel=session.channel,
             customer_id=session.customer_identifier,
             event="chat_transcript",

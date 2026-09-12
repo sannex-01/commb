@@ -9,7 +9,7 @@ from app.core.config import settings
 from app.core.database import get_db
 from app.models.release import ReleaseNote
 from app.models.business import BusinessProfile
-from app.telemetry.sync_worker import perform_remote_sync, get_support_config
+from app.cloud_sync.sync_worker import perform_remote_sync, get_support_config
 
 router = APIRouter(prefix="/system", tags=["System & Releases"])
 

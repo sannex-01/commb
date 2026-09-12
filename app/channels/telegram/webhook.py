@@ -14,7 +14,7 @@ from app.ai.memory import MemoryManager
 from app.flows.engine import FlowEngine
 from app.flows.definitions import MAIN_MENU_BUTTONS
 from app.schemas.bot_response import BotResponse
-from app.telemetry.client import telemetry_client
+from app.cloud_sync.client import cloud_client
 
 router = APIRouter(prefix="/webhooks/telegram", tags=["Telegram Webhook"])
 
@@ -273,7 +273,7 @@ async def handle_telegram_webhook(
             await tg_client.answer_callback_query(cb_id)
 
         # Track interactive button action telemetry
-        telemetry_client.track(
+        cloud_client.track(
             channel="telegram",
             customer_id=user_id,
             event="button_click",
@@ -296,7 +296,7 @@ async def handle_telegram_webhook(
         if "successful_payment" in msg:
             sp = msg["successful_payment"]
             logger.info(f"Telegram in-app payment successful for user {user_id}: {sp}")
-            telemetry_client.track(
+            cloud_client.track(
                 channel="telegram",
                 customer_id=user_id,
                 event="payment_success",
@@ -318,7 +318,7 @@ async def handle_telegram_webhook(
 
         logger.info(f"Incoming Telegram message from {user_id} (@{from_user.get('username')}): '{text}'")
 
-        telemetry_client.track(
+        cloud_client.track(
             channel="telegram",
             customer_id=user_id,
             event="message_received",
@@ -388,14 +388,14 @@ async def handle_telegram_webhook(
                     buttons=fallback_kb,
                 )
 
-        telemetry_client.track(
+        cloud_client.track(
             channel="telegram",
             customer_id=user_id,
             event="message_sent",
         )
 
         # Sync conversation transcript so Conversations CRM in AgentOS updates in real time
-        telemetry_client.sync_conversation(
+        cloud_client.sync_conversation(
             channel="telegram",
             customer_id=user_id,
             messages=[

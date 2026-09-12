@@ -20,8 +20,8 @@ from app.channels.widget.endpoints import router as widget_router
 from app.commerce.payments.webhooks import router as payments_router
 from app.commerce.bumpa.webhook import router as bumpa_router
 from app.commerce.catalog_upload import router as catalog_upload_router
-from app.telemetry.client import telemetry_client
-from app.telemetry.sync_worker import router as sync_router, start_sync_scheduler, shutdown_sync_scheduler
+from app.cloud_sync.client import cloud_client
+from app.cloud_sync.sync_worker import router as sync_router, start_sync_scheduler, shutdown_sync_scheduler
 from typing import Optional
 from app.models.catalog import CatalogItem
 from app.models.agent import Agent
@@ -61,7 +61,7 @@ async def lifespan(app: FastAPI):
 
     # Shutdown hooks
     shutdown_sync_scheduler()
-    telemetry_client.close()
+    cloud_client.close()
     logger.info(f"CommB Assistant shut down gracefully.")
 
 

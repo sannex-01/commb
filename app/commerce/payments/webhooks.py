@@ -16,7 +16,7 @@ from app.core.logger import logger
 from app.models.order import Order, PaymentLog
 from app.channels.whatsapp.client import WhatsAppClient
 from app.channels.telegram.client import TelegramClient
-from app.telemetry.client import telemetry_client
+from app.cloud_sync.client import cloud_client
 
 router = APIRouter(prefix="/webhooks/payments", tags=["Payment Webhooks"])
 
@@ -151,7 +151,7 @@ async def handle_paystack_webhook(
             await db.commit()
 
             # Track telemetry
-            telemetry_client.track(
+            cloud_client.track(
                 channel=order.channel,
                 customer_id=order.customer_identifier,
                 event="payment_success",
@@ -161,7 +161,7 @@ async def handle_paystack_webhook(
             )
 
             # Sync receipt message to conversation transcript
-            telemetry_client.sync_conversation(
+            cloud_client.sync_conversation(
                 channel=order.channel,
                 customer_id=order.customer_identifier,
                 messages=[{
@@ -271,7 +271,7 @@ async def handle_paystack_callback(
             db.add(payment_log)
             await db.commit()
 
-            telemetry_client.track(
+            cloud_client.track(
                 channel=order.channel,
                 customer_id=order.customer_identifier,
                 event="payment_success",
@@ -419,7 +419,7 @@ async def handle_flutterwave_webhook(
             db.add(payment_log)
             await db.commit()
 
-            telemetry_client.track(
+            cloud_client.track(
                 channel=order.channel,
                 customer_id=order.customer_identifier,
                 event="payment_success",
@@ -476,7 +476,7 @@ async def handle_monnify_webhook(
             db.add(payment_log)
             await db.commit()
 
-            telemetry_client.track(
+            cloud_client.track(
                 channel=order.channel,
                 customer_id=order.customer_identifier,
                 event="payment_success",
@@ -538,7 +538,7 @@ async def handle_stripe_webhook(
                 db.add(payment_log)
                 await db.commit()
 
-                telemetry_client.track(
+                cloud_client.track(
                     channel=order.channel,
                     customer_id=order.customer_identifier,
                     event="payment_success",

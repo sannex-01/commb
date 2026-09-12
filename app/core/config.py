@@ -130,14 +130,53 @@ class Settings(BaseSettings):
 
     COMMB_API_KEY: Optional[str] = None
 
-    # Optional telemetry backend. Disabled by default: a self-hosted CommB
-    # instance must never phone home. Set COMMB_TELEMETRY_KEY (and optionally
-    # a host) to send analytics to a compatible collector, e.g. Commb.app.
+    # --- Public update check (no key, no account, no personal data) -----------
+    # Fetches release notes and the sponsor banner from a public endpoint over a
+    # plain unauthenticated GET. Sends nothing but the running version, so every
+    # install -- self-hosted included -- learns about updates and security
+    # releases. Set CHECK_FOR_UPDATES=false for a fully offline instance.
+    CHECK_FOR_UPDATES: bool = True
+    COMMB_UPDATES_URL: str = "https://commb.app/api/v1/public"
+
+    # --- CommB Cloud sync (opt-in; EXPORTS PERSONAL DATA) ---------------------
+    # This is NOT anonymous telemetry. When a key is set, this instance sends
+    # customer profiles (name, email, phone), delivery addresses, order and
+    # payment records, and full conversation transcripts to the configured
+    # CommB Cloud workspace, which renders them in its Conversations CRM.
+    #
+    # Off by default: a self-hosted CommB never phones home. Enable it only for
+    # an instance you have deliberately connected to a CommB Cloud workspace,
+    # and only where your end users' data may lawfully be processed there
+    # (NDPR / GDPR: enabling this makes CommB Cloud a data processor).
+    #
+    # Requires the optional SDK: pip install commb[cloud]
+    COMMB_CLOUD_KEY: Optional[str] = None
+    COMMB_CLOUD_HOST: Optional[str] = None
+    ENABLE_CLOUD_SYNC: bool = False
+
+    # Deprecated aliases for the three settings above; still read so existing
+    # .env files keep working. Prefer the COMMB_CLOUD_* names.
     COMMB_TELEMETRY_KEY: Optional[str] = None
     COMMB_TELEMETRY_HOST: Optional[str] = None
+    ENABLE_TELEMETRY: bool = False
+
     SYNC_INTERVAL_MINUTES: int = 30
     SYNC_INTERVAL_HOURS: Optional[int] = None
-    ENABLE_TELEMETRY: bool = False
+
+    @property
+    def cloud_key(self) -> Optional[str]:
+        """Effective cloud-sync key, honouring the deprecated alias."""
+        return self.COMMB_CLOUD_KEY or self.COMMB_TELEMETRY_KEY
+
+    @property
+    def cloud_host(self) -> Optional[str]:
+        """Effective cloud-sync host, honouring the deprecated alias."""
+        return self.COMMB_CLOUD_HOST or self.COMMB_TELEMETRY_HOST
+
+    @property
+    def cloud_sync_enabled(self) -> bool:
+        """True when cloud sync is switched on by either the new or old flag."""
+        return bool(self.ENABLE_CLOUD_SYNC or self.ENABLE_TELEMETRY)
 
     # Host PostHog Analytics (Optional)
     POSTHOG_API_KEY: Optional[str] = None

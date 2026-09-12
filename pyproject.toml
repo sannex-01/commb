@@ -55,9 +55,17 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-# Optional telemetry backend. A self-hosted CommB never phones home, so the
-# SDK is not a runtime requirement — install `commb[telemetry]` only if you
-# are pointing an instance at a collector such as Commb.app.
+# Optional CommB Cloud sync. NOT needed for release notes or the sponsor
+# banner — those use a keyless public fetch built on httpx, which is already a
+# hard dependency, so every install gets update and security notices.
+#
+# Install `commb[cloud]` ONLY to connect an instance to a CommB Cloud
+# workspace. Doing so exports personal data (customer profiles, addresses,
+# orders, conversation transcripts). A self-hosted CommB never phones home.
+cloud = [
+    "commb-agent>=0.3.0",
+]
+# Deprecated alias for `cloud`; kept so existing installs keep resolving.
 telemetry = [
     "commb-agent>=0.3.0",
 ]

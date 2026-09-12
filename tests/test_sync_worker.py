@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import patch, MagicMock
 from app.core.config import settings
-from app.telemetry.sync_worker import scheduler, start_sync_scheduler, shutdown_sync_scheduler
+from app.cloud_sync.sync_worker import scheduler, start_sync_scheduler, shutdown_sync_scheduler
 
 
 def test_sync_interval_configuration():
@@ -9,9 +9,9 @@ def test_sync_interval_configuration():
 
 
 def test_start_sync_scheduler():
-    with patch("app.telemetry.sync_worker.scheduler.add_job") as mock_add_job, \
-         patch("app.telemetry.sync_worker.scheduler.start") as mock_start, \
-         patch("app.telemetry.sync_worker._scheduled_sync_job", return_value=None), \
+    with patch("app.cloud_sync.sync_worker.scheduler.add_job") as mock_add_job, \
+         patch("app.cloud_sync.sync_worker.scheduler.start") as mock_start, \
+         patch("app.cloud_sync.sync_worker._scheduled_sync_job", return_value=None), \
          patch("asyncio.create_task") as mock_create_task:
         
         start_sync_scheduler()

@@ -6,7 +6,7 @@ from app.main import app
 from app.core.database import Base, get_db
 from app.core.config import settings
 from app.models.release import ReleaseNote
-from app.telemetry.sync_worker import perform_remote_sync
+from app.cloud_sync.sync_worker import perform_remote_sync
 from unittest.mock import patch, MagicMock
 
 
@@ -75,14 +75,14 @@ async def test_perform_remote_sync_ingests_release_notes(async_session: AsyncSes
         is_critical=False,
     )
 
-    with patch("app.telemetry.sync_worker.AsyncCommBClient") as mock_client_cls:
+    with patch("app.cloud_sync.sync_worker.AsyncCommBClient") as mock_client_cls:
         mock_instance = MagicMock()
         mock_instance.__aenter__ = AsyncMock(return_value=mock_instance)
         mock_instance.__aexit__ = AsyncMock(return_value=None)
         mock_instance.get_config = AsyncMock(return_value=SdkConfigResponse(status="success", releases=[mock_release]))
         mock_instance.get_releases = AsyncMock(return_value=[mock_release])
         mock_client_cls.return_value = mock_instance
-        with patch("app.telemetry.sync_worker.settings.COMMB_TELEMETRY_KEY", "dummy_key"):
+        with patch("app.cloud_sync.sync_worker.settings.COMMB_CLOUD_KEY", "dummy_key"):
 
             summary = await perform_remote_sync(async_session)
             assert summary["status"] == "success"
@@ -99,8 +99,8 @@ async def test_perform_remote_sync_ingests_release_notes(async_session: AsyncSes
 async def test_perform_remote_sync_without_telemetry_sdk(async_session: AsyncSession):
     """With no telemetry SDK available, remote sync must degrade gracefully to
     local catalog sync rather than raising — the default self-hosted path."""
-    with patch("app.telemetry.sync_worker.AsyncCommBClient", None), \
-         patch("app.telemetry.sync_worker.settings.COMMB_TELEMETRY_KEY", "dummy_key"):
+    with patch("app.cloud_sync.sync_worker.AsyncCommBClient", None), \
+         patch("app.cloud_sync.sync_worker.settings.COMMB_CLOUD_KEY", "dummy_key"):
         summary = await perform_remote_sync(async_session)
 
     assert summary["status"] == "success"

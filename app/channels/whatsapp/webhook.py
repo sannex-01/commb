@@ -14,7 +14,7 @@ from app.ai.memory import MemoryManager
 from app.flows.engine import FlowEngine
 from app.flows.definitions import MAIN_MENU_BUTTONS
 from app.schemas.bot_response import BotResponse
-from app.telemetry.client import telemetry_client
+from app.cloud_sync.client import cloud_client
 
 router = APIRouter(prefix="/webhooks/whatsapp", tags=["WhatsApp Webhook"])
 
@@ -130,7 +130,7 @@ async def handle_whatsapp_message(
                 logger.info(f"Incoming WhatsApp message from {wa_id}: '{user_text}' (action: {action_id})")
 
                 # Track telemetry event
-                telemetry_client.track(
+                cloud_client.track(
                     channel="whatsapp",
                     customer_id=wa_id,
                     event="message_received",
@@ -197,7 +197,7 @@ async def handle_whatsapp_message(
                             )
 
                 # Track outgoing message telemetry
-                telemetry_client.track(
+                cloud_client.track(
                     channel="whatsapp",
                     customer_id=wa_id,
                     event="message_sent",

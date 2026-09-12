@@ -515,8 +515,8 @@ class FlowEngine:
                         order.payment_reference = order_ref
                         await db.commit()
 
-                        from app.telemetry.client import telemetry_client
-                        telemetry_client.track(
+                        from app.cloud_sync.client import cloud_client
+                        cloud_client.track(
                             channel=session.channel,
                             customer_id=session.customer_identifier,
                             event="payment_success",
@@ -973,8 +973,8 @@ class FlowEngine:
                 name=draft.get("name"), email=draft.get("email"), phone=draft.get("phone"),
             )
             try:
-                from app.telemetry.client import telemetry_client
-                telemetry_client.track(
+                from app.cloud_sync.client import cloud_client
+                cloud_client.track(
                     channel=session.channel,
                     customer_id=session.customer_identifier,
                     event="profile_saved",
@@ -1175,8 +1175,8 @@ class FlowEngine:
             if customer:
                 await save_delivery_address(db, customer, draft["fields"])
                 try:
-                    from app.telemetry.client import telemetry_client
-                    telemetry_client.track(
+                    from app.cloud_sync.client import cloud_client
+                    cloud_client.track(
                         channel=session.channel,
                         customer_id=session.customer_identifier,
                         event="delivery_address_saved",
@@ -1288,9 +1288,9 @@ class FlowEngine:
 
         await CartManager.clear_cart(db, session)
 
-        from app.telemetry.client import telemetry_client
+        from app.cloud_sync.client import cloud_client
         for res in order_results:
-            telemetry_client.track(
+            cloud_client.track(
                 channel=session.channel,
                 customer_id=session.customer_identifier,
                 event="payment_initiated",
