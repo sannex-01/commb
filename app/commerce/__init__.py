@@ -1,1 +1,1 @@
-"""Commerce and Payment modules for AICB."""
+"""Commerce and Payment modules for CommB."""

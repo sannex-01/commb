@@ -4,7 +4,7 @@ import { navigate } from '../router.js';
 import { showToast, escapeHtml } from '../utils.js';
 
 export async function renderForgotPasswordView(container) {
-  let bizName = state.business?.name || 'AICB Studio';
+  let bizName = state.business?.name || 'CommB Studio';
   let logoUrl = state.business?.logo_url || null;
 
   try {

@@ -247,7 +247,7 @@ async def export_reports_csv(
         ])
 
     output.seek(0)
-    filename = f"aicb_commerce_report_{datetime.now().strftime('%Y%m%d')}.csv"
+    filename = f"commb_commerce_report_{datetime.now().strftime('%Y%m%d')}.csv"
     return StreamingResponse(
         iter([output.getvalue()]),
         media_type="text/csv",

@@ -19,5 +19,5 @@ def test_start_sync_scheduler():
         mock_add_job.assert_called_once()
         args, kwargs = mock_add_job.call_args
         assert kwargs.get("minutes") == 30
-        assert kwargs.get("id") == "sannex_sync_job"
+        assert kwargs.get("id") == "remote_sync_job"
         assert kwargs.get("replace_existing") is True

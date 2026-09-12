@@ -1304,7 +1304,7 @@ class FlowEngine:
                 },
             )
 
-        # A mixed cart (some items sold via aicb's own catalog, some
+        # A mixed cart (some items sold via commb's own catalog, some
         # Bumpa-sourced) produces two separate orders/payments — each needs
         # its own link and its own "I've Paid" confirmation, since they're
         # two independent charges even though the customer experienced it

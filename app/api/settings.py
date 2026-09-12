@@ -123,8 +123,8 @@ async def get_api_key_status(
 
     return {
         "has_api_key": True,
-        "masked_key": biz.api_key_prefix or "aicb_live_••••••••••••",
-        "api_key_prefix": biz.api_key_prefix or "aicb_live_••••••••••••",
+        "masked_key": biz.api_key_prefix or "commb_live_••••••••••••",
+        "api_key_prefix": biz.api_key_prefix or "commb_live_••••••••••••",
         "created_at": biz.api_key_created_at,
         "api_key_created_at": biz.api_key_created_at,
         "last_rotated_at": biz.api_key_created_at,
@@ -265,14 +265,14 @@ async def send_test_email(
     try:
         biz_res = await db.execute(select(BusinessProfile).limit(1))
         biz = biz_res.scalar_one_or_none()
-        biz_name = biz.name if biz else "AICB Studio"
+        biz_name = biz.name if biz else "CommB Studio"
 
         subject = f"Test Email from {biz_name}"
         html = f"""
         <div style="font-family: sans-serif; padding: 24px; border: 1px solid #e5e7eb; border-radius: 8px; max-width: 500px;">
           <h2 style="color: #008060; margin-top: 0;">✓ Email Delivery Verified</h2>
           <p>Your transactional email delivery provider is configured correctly and working seamlessly for <strong>{biz_name}</strong>.</p>
-          <p style="color: #6b7280; font-size: 12px; margin-top: 24px;">Sent via AICB Email Engine</p>
+          <p style="color: #6b7280; font-size: 12px; margin-top: 24px;">Sent via CommB Email Engine</p>
         </div>
         """
         await EmailService.send_email(
@@ -331,12 +331,12 @@ async def send_test_sms(
     try:
         biz_res = await db.execute(select(BusinessProfile).limit(1))
         biz = biz_res.scalar_one_or_none()
-        biz_name = biz.name if biz else "AICB Studio"
+        biz_name = biz.name if biz else "CommB Studio"
 
         await SMSService.send_sms(
             db=db,
             to_phone=req.to_phone.strip(),
-            message=f"Test SMS from {biz_name}: your AICB order alert SMS delivery is configured correctly.",
+            message=f"Test SMS from {biz_name}: your CommB order alert SMS delivery is configured correctly.",
         )
         return {"status": "ok", "message": f"Test SMS sent successfully to {req.to_phone}."}
     except Exception as e:
@@ -384,11 +384,11 @@ async def send_test_telegram_alert(
     try:
         biz_res = await db.execute(select(BusinessProfile).limit(1))
         biz = biz_res.scalar_one_or_none()
-        biz_name = biz.name if biz else "AICB Studio"
+        biz_name = biz.name if biz else "CommB Studio"
 
         await TelegramAlertService.send_alert(
             db=db,
-            message=f"✅ Test alert from {biz_name}: your AICB order alerts are configured correctly.",
+            message=f"✅ Test alert from {biz_name}: your CommB order alerts are configured correctly.",
         )
         return {"status": "ok", "message": "Test alert sent successfully."}
     except Exception as e:

@@ -198,7 +198,7 @@ class BumpaClient:
         checkout_id: str,
         payment_details: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
-        """Call after the customer's payment is confirmed (aicb's own
+        """Call after the customer's payment is confirmed (commb's own
         Paystack webhook/verify already did this) to close the loop on
         Bumpa's side. Idempotent — safe to call more than once.
         payment_details, when given: {"data": {id, currency, reference,
@@ -234,14 +234,14 @@ class BumpaClient:
         this method doesn't itself filter mixed carts).
         """
         if not shipping_address:
-            # Bumpa requires pickup_location_id for type=pickup — aicb has
+            # Bumpa requires pickup_location_id for type=pickup — commb has
             # no pickup-location concept today, so this only works once a
             # shipping_address is actually supplied. Checked up front,
             # before any real API calls, rather than discovered midway
             # through cart creation.
             raise RuntimeError(
                 "Bumpa checkout needs a delivery address — pickup isn't "
-                "supported yet (aicb has no pickup-location selection)."
+                "supported yet (commb has no pickup-location selection)."
             )
 
         cart_res = await self.create_cart(location_id=location_id)

@@ -27,7 +27,7 @@ def generate_webhook_secret() -> str:
 
 def generate_verify_token() -> str:
     """Generates a random verify token for WhatsApp webhook challenge verification."""
-    return f"aicb_vt_{secrets.token_hex(16)}"
+    return f"commb_vt_{secrets.token_hex(16)}"
 
 
 class ChannelService:
@@ -40,10 +40,10 @@ class ChannelService:
         meta = json.loads(biz.metadata_json or "{}") if biz else {}
         channels_data = meta.get("channels", {})
 
-        domain = (settings.AICB_DOMAIN or settings.BOT_DOMAIN or "https://aicb.sannex.ng").rstrip("/")
+        domain = (settings.COMMB_DOMAIN or settings.BOT_DOMAIN or "https://commb.app").rstrip("/")
 
         wa_data = channels_data.get("whatsapp", {})
-        wa_verify_token = wa_data.get("verify_token") or settings.META_VERIFY_TOKEN or "aicb_webhook_verification_token_secret"
+        wa_verify_token = wa_data.get("verify_token") or settings.META_VERIFY_TOKEN or "commb_webhook_verification_token_secret"
         wa_app_secret = wa_data.get("app_secret") or settings.META_APP_SECRET or ""
 
         tg_data = channels_data.get("telegram", {})
@@ -95,7 +95,7 @@ class ChannelService:
         if wa_app_secret is None or wa_app_secret == "":
             wa_app_secret = existing_wa.get("app_secret", "")
 
-        wa_verify_token = (new_wa.get("verify_token") or existing_wa.get("verify_token") or "aicb_webhook_verification_token_secret").strip()
+        wa_verify_token = (new_wa.get("verify_token") or existing_wa.get("verify_token") or "commb_webhook_verification_token_secret").strip()
 
         merged_wa = {
             "verify_token": wa_verify_token,

@@ -21,7 +21,7 @@ async def _download_photo_bytes(url: str) -> Optional[bytes]:
     """Downloads photo bytes with timeout for fallback multipart upload to Telegram."""
     try:
         opt_url = _optimize_telegram_media_url(url)
-        headers = {"User-Agent": "AICB-Telegram-Bot/1.0"}
+        headers = {"User-Agent": "CommB-Telegram-Bot/1.0"}
         async with httpx.AsyncClient(timeout=8.0, follow_redirects=True) as client:
             res = await client.get(opt_url, headers=headers)
             if res.status_code == 200 and res.content:

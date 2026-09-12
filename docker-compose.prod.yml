@@ -3,24 +3,24 @@ services:
     image: postgres:16-alpine
     restart: always
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-aicb_user}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-aicb_secure_pass_2026}
-      POSTGRES_DB: ${POSTGRES_DB:-aicb}
+      POSTGRES_USER: ${POSTGRES_USER:-commb_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-commb_secure_pass_2026}
+      POSTGRES_DB: ${POSTGRES_DB:-commb}
     volumes:
-      - aicb_pgdata:/var/lib/postgresql/data
+      - commb_pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-aicb_user} -d ${POSTGRES_DB:-aicb}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-commb_user} -d ${POSTGRES_DB:-commb}"]
       interval: 5s
       timeout: 5s
       retries: 5
 
-  aicb:
+  commb:
     build:
       context: .
       dockerfile: Dockerfile
     restart: always
     ports:
-      - "${AICB_PORT:-8422}:8000"
+      - "${COMMB_PORT:-8422}:8000"
     env_file:
       - .env
     environment:
@@ -28,7 +28,7 @@ services:
       DEBUG: "false"
       PORT: 8000
       HOST: 0.0.0.0
-      DATABASE_URL: "postgresql+asyncpg://${POSTGRES_USER:-aicb_user}:${POSTGRES_PASSWORD:-aicb_secure_pass_2026}@postgres:5432/${POSTGRES_DB:-aicb}"
+      DATABASE_URL: "postgresql+asyncpg://${POSTGRES_USER:-commb_user}:${POSTGRES_PASSWORD:-commb_secure_pass_2026}@postgres:5432/${POSTGRES_DB:-commb}"
     depends_on:
       postgres:
         condition: service_healthy
@@ -40,4 +40,4 @@ services:
       start_period: 15s
 
 volumes:
-  aicb_pgdata:
+  commb_pgdata:

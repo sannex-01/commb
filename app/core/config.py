@@ -11,21 +11,24 @@ class Settings(BaseSettings):
     )
 
     # Application
-    APP_NAME: str = "AICB Assistant"
-    APP_VERSION: str = "0.1.0"
+    APP_NAME: str = "CommB Assistant"
+    APP_VERSION: str = "0.2.0"
     APP_SECRET: Optional[str] = None
     ENVIRONMENT: Literal["development", "production"] = "development"
     DEBUG: bool = True
     PORT: int = 8422
     HOST: str = "0.0.0.0"
-    AICB_DOMAIN: Optional[str] = None  # e.g. https://aicb.sannex.ng — used for callback URLs & webhooks
-    BOT_DOMAIN: Optional[str] = None  # Alias for backward compatibility
+    # Public base URL of THIS instance — used to build callback URLs and the
+    # webhook endpoints registered with Telegram/WhatsApp/payment gateways.
+    # Self-hosters must set this; there is deliberately no vendor default.
+    COMMB_DOMAIN: Optional[str] = None
+    BOT_DOMAIN: Optional[str] = None  # Alias accepted for the same value
 
     # Bot Operating Mode: 'conversational' | 'interactive_flow' | 'hybrid'
     BOT_MODE: Literal["conversational", "interactive_flow", "hybrid"] = "hybrid"
 
     # Database
-    DATABASE_URL: str = "sqlite+aiosqlite:///./aicb.db"
+    DATABASE_URL: str = "sqlite+aiosqlite:///./commb.db"
 
     # Memory & Session
     SESSION_EXPIRY_HOURS: int = 24
@@ -59,7 +62,7 @@ class Settings(BaseSettings):
     META_PHONE_NUMBER_ID: Optional[str] = None
     META_BUSINESS_ACCOUNT_ID: Optional[str] = None
     META_APP_SECRET: Optional[str] = None
-    META_VERIFY_TOKEN: str = "aicb_webhook_verification_token_secret"
+    META_VERIFY_TOKEN: str = "commb_webhook_verification_token_secret"
     WHATSAPP_FLOW_PRIVATE_KEY: Optional[str] = None
     WHATSAPP_FLOW_PRIVATE_KEY_PASSPHRASE: Optional[str] = None
     # The business's human-dialable WhatsApp number in E.164, e.g. "2348012345678"
@@ -97,7 +100,7 @@ class Settings(BaseSettings):
     DEFAULT_PAYMENT_GATEWAY: Literal["paystack", "flutterwave", "monnify", "stripe"] = "paystack"
     PAYSTACK_SECRET_KEY: Optional[str] = None
     PAYSTACK_PUBLIC_KEY: Optional[str] = None
-    PAYSTACK_CALLBACK_URL: str = ""  # Auto-derived from AICB_DOMAIN if empty
+    PAYSTACK_CALLBACK_URL: str = ""  # Auto-derived from COMMB_DOMAIN if empty
     FLUTTERWAVE_SECRET_KEY: Optional[str] = None
     FLUTTERWAVE_PUBLIC_KEY: Optional[str] = None
     FLUTTERWAVE_SECRET_HASH: Optional[str] = None
@@ -117,7 +120,7 @@ class Settings(BaseSettings):
     CLOUDINARY_CLOUD_NAME: Optional[str] = None
     CLOUDINARY_API_KEY: Optional[str] = None
     CLOUDINARY_API_SECRET: Optional[str] = None
-    CLOUDINARY_FOLDER: str = "aicb_assets"
+    CLOUDINARY_FOLDER: str = "commb_assets"
 
     R2_ACCOUNT_ID: Optional[str] = None
     R2_ACCESS_KEY_ID: Optional[str] = None
@@ -125,14 +128,16 @@ class Settings(BaseSettings):
     R2_BUCKET_NAME: Optional[str] = None
     R2_PUBLIC_URL: Optional[str] = None
 
-    AICB_API_KEY: Optional[str] = None
+    COMMB_API_KEY: Optional[str] = None
 
-    # Sannex Agent Telemetry & AgentOS Sync
-    SANNEX_API_KEY: Optional[str] = None
-    SANNEX_HOST: str = "https://agentos.aicb.sannex.ng"
+    # Optional telemetry backend. Disabled by default: a self-hosted CommB
+    # instance must never phone home. Set COMMB_TELEMETRY_KEY (and optionally
+    # a host) to send analytics to a compatible collector, e.g. Commb.app.
+    COMMB_TELEMETRY_KEY: Optional[str] = None
+    COMMB_TELEMETRY_HOST: Optional[str] = None
     SYNC_INTERVAL_MINUTES: int = 30
     SYNC_INTERVAL_HOURS: Optional[int] = None
-    ENABLE_TELEMETRY: bool = True
+    ENABLE_TELEMETRY: bool = False
 
     # Host PostHog Analytics (Optional)
     POSTHOG_API_KEY: Optional[str] = None
@@ -142,8 +147,10 @@ class Settings(BaseSettings):
     INSTANCE_ID: Optional[str] = None
 
     def model_post_init(self, __context) -> None:
-        domain = self.AICB_DOMAIN or self.BOT_DOMAIN or "https://aicb.sannex.ng"
-        self.AICB_DOMAIN = domain
+        # Fall back to the local server address rather than a vendor domain so
+        # a fresh self-hosted instance boots without any CommB-owned host.
+        domain = self.COMMB_DOMAIN or self.BOT_DOMAIN or f"http://localhost:{self.PORT}"
+        self.COMMB_DOMAIN = domain
         self.BOT_DOMAIN = domain
 
         if not self.INSTANCE_ID:

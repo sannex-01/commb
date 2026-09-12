@@ -651,7 +651,7 @@ class ToolExecutor:
         order.customer_phone = order.customer_phone or customer_phone
 
         if effective_gateway == "bumpa":
-            # Bumpa settles via its own Paystack reference, not aicb's
+            # Bumpa settles via its own Paystack reference, not commb's
             # order_reference — the Paystack webhook/callback matches on
             # payment_reference too (see app/commerce/payments/webhooks.py)
             # so this order gets marked paid correctly.

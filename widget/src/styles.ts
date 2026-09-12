@@ -1,4 +1,4 @@
-const PREFIX = "aicb-widget";
+const PREFIX = "commb-widget";
 
 /** Injects scoped styles via JS rather than a linked stylesheet, so a
  * single <script> tag is genuinely self-contained on an arbitrary

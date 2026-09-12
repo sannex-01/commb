@@ -87,7 +87,7 @@ export async function loadOverviewPage(container) {
     const progressPercent = Math.round((completedCount / totalSetupCount) * 100);
     const allRequiredCompleted = setupSteps.filter(s => s.required !== false).every(s => s.completed);
 
-    const isGuideCollapsed = localStorage.getItem('aicb_hide_setup_guide') === 'true';
+    const isGuideCollapsed = localStorage.getItem('commb_hide_setup_guide') === 'true';
 
     container.innerHTML = `
       <div class="space-y-6">
@@ -268,7 +268,7 @@ export async function loadOverviewPage(container) {
         const content = document.getElementById('setup-guide-content');
         if (content) {
           const isHidden = content.classList.toggle('hidden');
-          localStorage.setItem('aicb_hide_setup_guide', String(isHidden));
+          localStorage.setItem('commb_hide_setup_guide', String(isHidden));
           toggleBtn.innerHTML = `
             <i data-lucide="${isHidden ? 'chevron-down' : 'chevron-up'}" class="w-3.5 h-3.5"></i>
             <span>${isHidden ? 'Expand Guide' : 'Collapse'}</span>

@@ -449,7 +449,7 @@ window.prevWizardStep = function(formId) {
 // ============================================================================
 
 export async function uploadMediaFile(file) {
-  const token = localStorage.getItem('aicb_admin_token');
+  const token = localStorage.getItem('commb_admin_token');
   const formData = new FormData();
   formData.append('file', file);
 

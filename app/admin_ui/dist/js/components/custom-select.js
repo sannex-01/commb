@@ -1,5 +1,5 @@
 /**
- * Custom Select Component for AICB Admin UI
+ * Custom Select Component for CommB Admin UI
  * Provides theme-aware, searchable, accessible custom dropdowns
  * with instant two-way synchronization with native <select> elements.
  */

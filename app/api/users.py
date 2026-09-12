@@ -35,7 +35,7 @@ async def list_users(
     current_user: AdminUser = Depends(require_admin_role),
     db: AsyncSession = Depends(get_db),
 ):
-    """Lists all team user accounts on this AICB instance."""
+    """Lists all team user accounts on this CommB instance."""
     res = await db.execute(select(AdminUser).order_by(AdminUser.created_at.desc()))
     users = res.scalars().all()
 
@@ -120,7 +120,7 @@ async def create_user(
 
         biz_res = await db.execute(select(BusinessProfile).limit(1))
         biz = biz_res.scalar_one_or_none()
-        biz_name = biz.name if biz and biz.name else "AICB Studio"
+        biz_name = biz.name if biz and biz.name else "CommB Studio"
         logo_url = biz.logo_url if biz else None
 
         try:

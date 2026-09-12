@@ -52,7 +52,7 @@ async def admin_login(req: LoginRequest, request: Request, response: Response, d
 
     token = create_admin_jwt(user.id, user.email, user.role)
     response.set_cookie(
-        key="aicb_admin_session",
+        key="commb_admin_session",
         value=token,
         httponly=True,
         samesite="lax",
@@ -73,7 +73,7 @@ async def admin_login(req: LoginRequest, request: Request, response: Response, d
             "role": user.role,
         },
         "business": {
-            "name": biz.name if biz else "AICB Business",
+            "name": biz.name if biz else "CommB Business",
             "currency": biz.currency if biz else "NGN",
             "contact_email": biz.contact_email if biz else None,
             "logo_url": biz.logo_url if biz else None,
@@ -104,7 +104,7 @@ async def get_current_user_profile(
             "created_at": current_user.created_at,
         },
         "business": {
-            "name": biz.name if biz else "AICB Business",
+            "name": biz.name if biz else "CommB Business",
             "currency": biz.currency if biz else "NGN",
             "contact_email": biz.contact_email if biz else None,
             "logo_url": biz.logo_url if biz else None,
@@ -115,7 +115,7 @@ async def get_current_user_profile(
 @router.post("/logout")
 async def admin_logout(response: Response):
     """Logs out the user and clears session cookie."""
-    response.delete_cookie("aicb_admin_session")
+    response.delete_cookie("commb_admin_session")
     return {"status": "ok", "message": "Logged out successfully."}
 
 
@@ -135,7 +135,7 @@ async def forgot_password(req: ForgotPasswordRequest, request: Request, db: Asyn
 
     biz_res = await db.execute(select(BusinessProfile).limit(1))
     biz = biz_res.scalar_one_or_none()
-    biz_name = biz.name if biz else "AICB Studio"
+    biz_name = biz.name if biz else "CommB Studio"
     logo_url = biz.logo_url if biz else None
 
     from app.services.email import EmailService

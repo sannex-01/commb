@@ -6,6 +6,6 @@ __pycache__
 .git
 .gitignore
 .pytest_cache
-aicb.db
+commb.db
 widget/node_modules
 widget/dist

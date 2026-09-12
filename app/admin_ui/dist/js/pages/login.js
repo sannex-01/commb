@@ -4,7 +4,7 @@ import { navigate } from '../router.js';
 import { showToast, escapeHtml, initPasswordToggles } from '../utils.js';
 
 export async function renderLoginView(container) {
-  let bizName = state.business?.name || 'AICB Studio';
+  let bizName = state.business?.name || 'CommB Studio';
   let logoUrl = state.business?.logo_url || null;
 
   try {
@@ -87,7 +87,7 @@ export async function renderLoginView(container) {
 
     try {
       const res = await api('/auth/login', { method: 'POST', body: JSON.stringify(payload) });
-      localStorage.setItem('aicb_admin_token', res.access_token);
+      localStorage.setItem('commb_admin_token', res.access_token);
       state.user = res.user;
       state.business = res.business;
       if (res.business?.name && window.updateAppTitle) window.updateAppTitle(res.business.name);

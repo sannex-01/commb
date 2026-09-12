@@ -4,17 +4,17 @@ export const state = {
   business: null,
   apiKeyInfo: null,
   appVersion: '0.2.1',
-  appName: 'AICB Assistant',
+  appName: 'CommB Assistant',
   support: null,
   route: window.location.pathname || '/_/admin/overview',
-  theme: localStorage.getItem('aicb_theme') || 'light',
-  sidebarCollapsed: localStorage.getItem('aicb_sidebar_collapsed') === 'true',
+  theme: localStorage.getItem('commb_theme') || 'light',
+  sidebarCollapsed: localStorage.getItem('commb_sidebar_collapsed') === 'true',
 };
 
 // Apply Theme
 export function applyTheme(theme) {
   state.theme = theme;
-  localStorage.setItem('aicb_theme', theme);
+  localStorage.setItem('commb_theme', theme);
   document.documentElement.className = theme;
 }
 

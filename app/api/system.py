@@ -9,7 +9,7 @@ from app.core.config import settings
 from app.core.database import get_db
 from app.models.release import ReleaseNote
 from app.models.business import BusinessProfile
-from app.telemetry.sync_worker import perform_sannex_sync, get_support_config
+from app.telemetry.sync_worker import perform_remote_sync, get_support_config
 
 router = APIRouter(prefix="/system", tags=["System & Releases"])
 
@@ -29,7 +29,8 @@ class SystemVersionResponse(BaseModel):
     name: str
     version: str
     environment: str
-    sannex_host: str
+    # None on a self-hosted instance with no telemetry collector configured.
+    telemetry_host: Optional[str] = None
     support: Optional[Dict[str, Any]] = None
 
 
@@ -40,7 +41,7 @@ async def get_system_version():
         name=settings.APP_NAME,
         version=settings.APP_VERSION,
         environment=settings.ENVIRONMENT,
-        sannex_host=settings.SANNEX_HOST,
+        telemetry_host=settings.COMMB_TELEMETRY_HOST,
         support=get_support_config(),
     )
 
@@ -64,13 +65,13 @@ async def list_release_notes(db: AsyncSession = Depends(get_db)):
             ReleaseNoteResponse(
                 id=1,
                 version=settings.APP_VERSION,
-                title="AICB Stable Operations",
+                title="CommB Stable Operations",
                 description="Core AI Commerce and Operations Platform with Multi-Agent Studio, Access Groups, and Communication Channels.",
                 changelog=[
                     "Multi-Agent Studio with custom Access Groups and LLM Provider overrides",
                     "Dynamic Communication Channels (WhatsApp, Telegram, Live Widget)",
                     "Granular payment and storage runtime configuration",
-                    "AgentOS telemetry and real-time release notes synchronization",
+                    "the telemetry collector telemetry and real-time release notes synchronization",
                 ],
                 release_date="2026-09-05",
                 is_critical=False,
@@ -104,8 +105,8 @@ async def list_release_notes(db: AsyncSession = Depends(get_db)):
 
 @router.post("/releases/sync")
 async def sync_system_releases(db: AsyncSession = Depends(get_db)):
-    """Trigger a manual synchronization of release notes from AgentOS."""
-    sync_result = await perform_sannex_sync(db)
+    """Trigger a manual synchronization of release notes from the telemetry collector."""
+    sync_result = await perform_remote_sync(db)
     releases = await list_release_notes(db)
     return {
         "status": "success",
@@ -145,12 +146,12 @@ async def get_health_summary(db: AsyncSession = Depends(get_db)):
 
     return {
         "status": "operational" if db_ok else "degraded",
-        "app_name": biz.name if biz else "AICB (AI Commerce Bots)",
+        "app_name": biz.name if biz else "CommB (AI Commerce Bots)",
         "version": settings.APP_VERSION,
         "environment": settings.ENVIRONMENT,
         "instance_id": settings.INSTANCE_ID,
         "business": {
-            "name": biz.name if biz else "AICB Business",
+            "name": biz.name if biz else "CommB Business",
             "logo_url": biz.logo_url if biz else None,
             "currency": biz.currency if biz else "NGN",
         } if biz else None,
@@ -186,8 +187,8 @@ async def get_health_summary(db: AsyncSession = Depends(get_db)):
             "provider": settings.DEFAULT_PAYMENT_GATEWAY.capitalize(),
             "currency": biz.currency if (biz and biz.currency) else "NGN",
         },
-        "docs_url": "https://agentos.sannex.ng/docs",
-        "github_url": "https://github.com/sannex-01/aicb",
+        "docs_url": "https://commb.app/docs",
+        "github_url": "https://github.com/samakins/commb",
     }
 
 
@@ -198,7 +199,7 @@ async def get_debug_info():
     import platform
 
     return {
-        "aicb_version": settings.APP_VERSION,
+        "commb_version": settings.APP_VERSION,
         "instance_id": settings.INSTANCE_ID,
         "python_version": sys.version.split()[0],
         "platform": platform.platform(),
@@ -207,7 +208,7 @@ async def get_debug_info():
         "llm_provider": settings.LLM_PROVIDER,
         "bot_mode": settings.BOT_MODE,
         "posthog_enabled": bool(settings.POSTHOG_API_KEY),
-        "sannex_sync_enabled": bool(settings.SANNEX_API_KEY),
+        "telemetry_sync_enabled": bool(settings.COMMB_TELEMETRY_KEY),
         "timestamp": datetime.now(timezone.utc).isoformat(),
     }
 

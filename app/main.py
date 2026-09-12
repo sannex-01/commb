@@ -55,14 +55,14 @@ async def lifespan(app: FastAPI):
     # 2. Start Background 30m Sync Scheduler
     start_sync_scheduler()
 
-    logger.info(f"AICB Assistant is active and ready (Mode: {settings.BOT_MODE.upper()})")
+    logger.info(f"CommB Assistant is active and ready (Mode: {settings.BOT_MODE.upper()})")
 
     yield
 
     # Shutdown hooks
     shutdown_sync_scheduler()
     telemetry_client.close()
-    logger.info(f"AICB Assistant shut down gracefully.")
+    logger.info(f"CommB Assistant shut down gracefully.")
 
 
 app = FastAPI(
@@ -109,7 +109,7 @@ async def root(request: Request):
     return {
         "message": f"Welcome to {settings.APP_NAME}",
         "version": settings.APP_VERSION,
-        "docs_url": "https://agentos.sannex.ng/docs",
+        "docs_url": "https://commb.app/docs",
         "health": "/health",
         "admin_url": "/_/admin",
     }

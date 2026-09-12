@@ -31,7 +31,7 @@ class EmailService:
                 "api_key_masked": masked_key,
                 "api_key_configured": bool(api_key),
                 "from_email": raw_config.get("from_email", ""),
-                "from_name": raw_config.get("from_name", biz.name or "AICB Admin"),
+                "from_name": raw_config.get("from_name", biz.name or "CommB Admin"),
             }
         elif provider == "brevo":
             api_key = raw_config.get("api_key", "")
@@ -40,7 +40,7 @@ class EmailService:
                 "api_key_masked": masked_key,
                 "api_key_configured": bool(api_key),
                 "from_email": raw_config.get("from_email", ""),
-                "from_name": raw_config.get("from_name", biz.name or "AICB Admin"),
+                "from_name": raw_config.get("from_name", biz.name or "CommB Admin"),
             }
 
         return {
@@ -82,7 +82,7 @@ class EmailService:
             if "@" not in from_email:
                 raise ValueError("Please provide a valid sender email address (e.g. hello@yourdomain.com).")
 
-            from_name = (config.get("from_name") or biz.name or "AICB Admin").strip()
+            from_name = (config.get("from_name") or biz.name or "CommB Admin").strip()
 
             meta["email"] = {
                 "provider": clean_provider,
@@ -129,7 +129,7 @@ class EmailService:
 
         api_key = config.get("api_key")
         from_email = config.get("from_email", biz.contact_email or "noreply@example.com")
-        from_name = config.get("from_name", biz.name or "AICB Admin")
+        from_name = config.get("from_name", biz.name or "CommB Admin")
         sender = f"{from_name} <{from_email}>" if from_name else from_email
 
         async with httpx.AsyncClient(timeout=15.0) as client:
@@ -196,7 +196,7 @@ class EmailService:
         db: AsyncSession,
         user: AdminUser,
         reset_link: str,
-        business_name: str = "AICB Studio",
+        business_name: str = "CommB Studio",
         logo_url: Optional[str] = None,
     ) -> bool:
         """Sends a beautifully styled HTML password reset email to the user."""
@@ -267,7 +267,7 @@ class EmailService:
         db: AsyncSession,
         user: AdminUser,
         invite_link: str,
-        business_name: str = "AICB Studio",
+        business_name: str = "CommB Studio",
         logo_url: Optional[str] = None,
         role: str = "team member",
     ) -> bool:

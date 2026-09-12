@@ -97,8 +97,8 @@ def verify_stripe_signature(payload: bytes, signature_header: Optional[str]) -> 
 # ============================================================================
 
 async def verify_dashboard_auth(authorization: Optional[str] = Header(None)) -> None:
-    """Verifies static AICB_API_KEY from environment for agentOS callers."""
-    if not settings.AICB_API_KEY:
+    """Verifies static COMMB_API_KEY from environment for agentOS callers."""
+    if not settings.COMMB_API_KEY:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Dashboard API key not configured on this instance.",
@@ -106,7 +106,7 @@ async def verify_dashboard_auth(authorization: Optional[str] = Header(None)) -> 
     if not authorization or not authorization.startswith("Bearer "):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Missing bearer token.")
     token = authorization[len("Bearer "):]
-    if not hmac.compare_digest(token, settings.AICB_API_KEY):
+    if not hmac.compare_digest(token, settings.COMMB_API_KEY):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid API key.")
 
 
@@ -152,7 +152,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 # 4. JWT SESSION TOKENS FOR STANDALONE ADMIN
 # ============================================================================
 
-JWT_SECRET = settings.APP_SECRET or getattr(settings, "AICB_API_KEY", None) or "aicb-standalone-secret-key-32b-min"
+JWT_SECRET = settings.APP_SECRET or getattr(settings, "COMMB_API_KEY", None) or "commb-standalone-secret-key-32b-min"
 
 def _b64url_encode(data: bytes) -> str:
     return base64.urlsafe_b64encode(data).decode("utf-8").rstrip("=")
@@ -253,9 +253,9 @@ def generate_platform_api_key() -> Tuple[str, str, str]:
         (raw_key, key_hash, masked_preview)
         - raw_key: Full plaintext string to show user once upon creation.
         - key_hash: SHA-256 hex digest to store safely in DB.
-        - masked_preview: e.g. 'aicb_live_d8a2...3f1a'
+        - masked_preview: e.g. 'commb_live_d8a2...3f1a'
     """
-    raw_key = f"aicb_live_{secrets.token_urlsafe(32)}"
+    raw_key = f"commb_live_{secrets.token_urlsafe(32)}"
     key_hash = hashlib.sha256(raw_key.encode("utf-8")).hexdigest()
     masked_preview = f"{raw_key[:14]}...{raw_key[-4:]}"
     return raw_key, key_hash, masked_preview
@@ -274,8 +274,8 @@ async def get_current_admin_user(
     token = None
     if authorization and authorization.startswith("Bearer "):
         token = authorization[len("Bearer "):].strip()
-    elif "aicb_admin_session" in request.cookies:
-        token = request.cookies.get("aicb_admin_session")
+    elif "commb_admin_session" in request.cookies:
+        token = request.cookies.get("commb_admin_session")
 
     if not token:
         raise HTTPException(
@@ -334,24 +334,24 @@ async def require_operator_or_above(
 async def verify_platform_api_key(
     request: Request,
     authorization: Optional[str] = Header(None),
-    x_aicb_api_key: Optional[str] = Header(None, alias="X-AICB-API-KEY"),
+    x_commb_api_key: Optional[str] = Header(None, alias="X-CommB-API-KEY"),
     db: AsyncSession = Depends(get_db),
 ):
-    """Validates platform API key (aicb_live_...) against BusinessProfile.api_key_hash for standalone API callers."""
+    """Validates platform API key (commb_live_...) against BusinessProfile.api_key_hash for standalone API callers."""
     raw_token = None
     if authorization and authorization.startswith("Bearer "):
         raw_token = authorization[len("Bearer "):].strip()
-    elif x_aicb_api_key:
-        raw_token = x_aicb_api_key.strip()
+    elif x_commb_api_key:
+        raw_token = x_commb_api_key.strip()
 
     if not raw_token:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Missing API key. Provide Bearer token or X-AICB-API-KEY header.",
+            detail="Missing API key. Provide Bearer token or X-CommB-API-KEY header.",
         )
 
-    # First check static AICB_API_KEY if configured (AgentOS legacy/env fallback)
-    if settings.AICB_API_KEY and hmac.compare_digest(raw_token, settings.AICB_API_KEY):
+    # First check static COMMB_API_KEY if configured (AgentOS legacy/env fallback)
+    if settings.COMMB_API_KEY and hmac.compare_digest(raw_token, settings.COMMB_API_KEY):
         return True
 
     # Check standalone BusinessProfile key hash

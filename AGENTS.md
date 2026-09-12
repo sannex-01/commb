@@ -1,9 +1,9 @@
-# AICB — Agent & Developer Guidelines
+# CommB — Agent & Developer Guidelines
 
 ## Repository Structure
 
 ```
-aicb/
+commb/
 ├── app/
 │   ├── admin_ui/        # Vanilla SPA management portal (HTML/CSS/JS)
 │   ├── ai/              # LLM engine, memory, RAG, & flow engine
@@ -11,13 +11,13 @@ aicb/
 │   ├── core/            # Config, database, security, & logger
 │   ├── models/          # SQLAlchemy ORM models
 │   ├── services/        # Commerce, email, payment, & sync services
-│   ├── cli.py           # Standalone CLI entrypoint (`aicb start`, `aicb doctor`)
+│   ├── cli.py           # Standalone CLI entrypoint (`commb start`, `commb doctor`)
 │   └── main.py          # FastAPI application entrypoint
 ├── widget/              # Embeddable website chat widget (Vite/TS bundle)
 ├── tests/               # Pytest suite (unit, integration, API tests)
 ├── .github/workflows/   # CI/CD: Docker Hub, GHCR, & PyPI publishing
 ├── Dockerfile           # Multi-stage production container build
-├── docker-compose.yml   # Multi-container stack (Postgres + AICB)
+├── docker-compose.yml   # Multi-container stack (Postgres + CommB)
 ├── pyproject.toml       # PyPI packaging & script definitions
 └── requirements.txt     # Python runtime dependencies
 ```
@@ -37,7 +37,7 @@ Before cutting a new release, you **MUST** bump the version across all of the fo
    ```python
    APP_VERSION: str = "X.Y.Z"
    ```
-3. **AICB README**: `README.md`
+3. **CommB README**: `README.md`
    - Update version badges or release notes.
 4. **Documentation Site** (`Projects/agentOS/docs-site`):
    - Add/update release blog: `docs-site/blog/YYYY-MM-DD-vX.Y.Z-release.md`
@@ -97,7 +97,7 @@ Configure in **GitHub Repo &rarr; Settings &rarr; Secrets and variables &rarr; A
 
 | Secret Name | Source | Purpose |
 |---|---|---|
-| `PYPI_API_TOKEN` | [pypi.org](https://pypi.org) &rarr; Account Settings &rarr; API Tokens | Uploading `aicb` to PyPI |
+| `PYPI_API_TOKEN` | [pypi.org](https://pypi.org) &rarr; Account Settings &rarr; API Tokens | Uploading `commb` to PyPI |
 | `DOCKERHUB_USERNAME` | [hub.docker.com](https://hub.docker.com) | Docker Hub username |
 | `DOCKERHUB_TOKEN` | [hub.docker.com](https://hub.docker.com) &rarr; Security &rarr; Access Tokens | Docker Hub authentication |
 
@@ -116,7 +116,7 @@ python -m twine upload dist/*
 
 ### B. Publish Docker Image
 ```bash
-docker build -t samakins/aicb:vX.Y.Z -t samakins/aicb:latest .
-docker push samakins/aicb:vX.Y.Z
-docker push samakins/aicb:latest
+docker build -t samakins/commb:vX.Y.Z -t samakins/commb:latest .
+docker push samakins/commb:vX.Y.Z
+docker push samakins/commb:latest
 ```

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AICB Starter Kit & Production Preflight System Doctor
+CommB Starter Kit & Production Preflight System Doctor
 Validates environment variables, database access, LLM providers, and external services.
 """
 
@@ -173,31 +173,31 @@ async def check_payments():
     return True
 
 
-async def check_sannex():
-    print("\n[SYNC] 5. Sannex Agent Telemetry & Sync Check...")
-    if not settings.SANNEX_API_KEY:
-        print("  [INFO] SANNEX_API_KEY is not configured. Telemetry & remote AgentOS sync will run locally.")
+async def check_telemetry():
+    print("\n[SYNC] 5. Telemetry & Remote Sync Check...")
+    if not settings.COMMB_TELEMETRY_KEY:
+        print("  [INFO] COMMB_TELEMETRY_KEY is not configured. Telemetry & remote the telemetry collector sync will run locally.")
         return True
     try:
         async with httpx.AsyncClient(timeout=5.0) as client:
             res = await client.post(
-                f"{settings.SANNEX_HOST.rstrip('/')}/v1/events",
+                f"{settings.COMMB_TELEMETRY_HOST.rstrip('/')}/v1/events",
                 json={"batch": [{"channel": "healthcheck", "customer_id": "doctor_test", "event": "ping"}]},
-                headers={"Authorization": f"Bearer {settings.SANNEX_API_KEY}"}
+                headers={"Authorization": f"Bearer {settings.COMMB_TELEMETRY_KEY}"}
             )
             if res.status_code in [200, 202]:
-                print(f"  [OK] Sannex Agent Telemetry API connected successfully! ({settings.SANNEX_HOST})")
+                print(f"  [OK] Telemetry collector connected successfully! ({settings.COMMB_TELEMETRY_HOST})")
                 return True
             else:
-                print(f"  [WARN] Sannex Agent returned status {res.status_code}: {res.text}")
+                print(f"  [WARN] Telemetry collector returned status {res.status_code}: {res.text}")
                 return False
     except Exception as e:
-        print(f"  [WARN] Could not connect to Sannex Server: {e}")
+        print(f"  [WARN] Could not connect to telemetry collector: {e}")
         return False
 
 
 async def main():
-    print_header("AICB SYSTEM DOCTOR: ENVIRONMENT HEALTH CHECK")
+    print_header("CommB SYSTEM DOCTOR: ENVIRONMENT HEALTH CHECK")
     print(f"Timestamp: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print(f"App Mode: {settings.BOT_MODE.upper()} | Env: {settings.ENVIRONMENT.upper()}")
 
@@ -205,12 +205,12 @@ async def main():
     llm_ok = await check_llm_provider()
     channels_ok = await check_channels()
     payments_ok = await check_payments()
-    sannex_ok = await check_sannex()
+    telemetry_ok = await check_telemetry()
 
     print_header("SYSTEM DIAGNOSTIC SUMMARY")
     if db_ok:
-        print("  [+] SUCCESS: AICB Engine is healthy and ready to run!")
-        print("  [+] Start the server: aicb start --port 8422")
+        print("  [+] SUCCESS: CommB Engine is healthy and ready to run!")
+        print("  [+] Start the server: commb start --port 8422")
         print("  [+] Or with Docker:   docker compose up -d\n")
     else:
         print("  [-] ATTENTION: Please review database configuration errors above.\n")

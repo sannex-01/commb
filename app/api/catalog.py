@@ -672,7 +672,7 @@ async def download_csv_template(
     return StreamingResponse(
         iter([output.getvalue()]),
         media_type="text/csv",
-        headers={"Content-Disposition": "attachment; filename=aicb_product_import_template.csv"},
+        headers={"Content-Disposition": "attachment; filename=commb_product_import_template.csv"},
     )
 
 

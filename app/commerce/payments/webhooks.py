@@ -116,7 +116,7 @@ async def handle_paystack_webhook(
         currency = data.get("currency", "NGN")
 
         # A Bumpa checkout's Paystack charge carries BUMPA's payment-intent
-        # reference, not aicb's own order_reference (see
+        # reference, not commb's own order_reference (see
         # app/commerce/checkout.py) — match on either so those orders still
         # get marked paid from this same webhook.
         stmt = select(Order).where(or_(Order.order_reference == reference, Order.payment_reference == reference))
@@ -200,8 +200,8 @@ async def handle_paystack_callback(
 
     # Check if order exists. Note: for a Bumpa-checkout order, Paystack's
     # authorization_url was created BY Bumpa, so Paystack redirects the
-    # customer's browser back to Bumpa's own callback URL, not aicb's — this
-    # route in practice only ever fires for orders aicb itself initiated
+    # customer's browser back to Bumpa's own callback URL, not commb's — this
+    # route in practice only ever fires for orders commb itself initiated
     # directly. The payment_reference fallback here is defensive
     # consistency with the webhook match above, not a path expected to be
     # exercised for Bumpa orders; the webhook (server-to-server) is what

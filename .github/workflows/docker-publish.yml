@@ -41,7 +41,7 @@ jobs:
         with:
           images: |
             ghcr.io/${{ github.repository }}
-            ${{ secrets.DOCKERHUB_USERNAME && format('{0}/aicb', secrets.DOCKERHUB_USERNAME) || '' }}
+            ${{ secrets.DOCKERHUB_USERNAME && format('{0}/commb', secrets.DOCKERHUB_USERNAME) || '' }}
           tags: |
             type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
             type=semver,pattern={{version}}

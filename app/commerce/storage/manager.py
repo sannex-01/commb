@@ -8,7 +8,7 @@ from app.core.logger import logger
 
 
 class StorageManager:
-    """Unified cloud asset storage manager for AICB product images, logos, and receipts."""
+    """Unified cloud asset storage manager for CommB product images, logos, and receipts."""
 
     @classmethod
     def is_configured(cls) -> bool:
@@ -41,7 +41,7 @@ class StorageManager:
         else:
             logger.info(f"Storage driver '{provider}' fallback: returning mock URL for {filename}")
             return {
-                "url": f"https://cdn.aicb.sannex.ng/assets/{filename}",
+                "url": f"https://cdn.commb.sannex.ng/assets/{filename}",
                 "provider": "local_mock",
                 "filename": filename,
             }

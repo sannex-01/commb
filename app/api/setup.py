@@ -32,7 +32,7 @@ class SetupInitRequest(BaseModel):
 
 @router.get("/status")
 async def get_setup_status(db: AsyncSession = Depends(get_db)):
-    """Returns whether the standalone AICB instance has been initialized with a Super Admin."""
+    """Returns whether the standalone CommB instance has been initialized with a Super Admin."""
     user_count_res = await db.execute(select(func.count(AdminUser.id)))
     user_count = user_count_res.scalar() or 0
 
@@ -43,11 +43,11 @@ async def get_setup_status(db: AsyncSession = Depends(get_db)):
         "initialized": user_count > 0,
         "business_configured": bool(biz and biz.is_configured),
         "app_name": biz.name if biz else settings.APP_NAME,
-        "business_name": biz.name if biz else "AICB Studio",
+        "business_name": biz.name if biz else "CommB Studio",
         "logo_url": biz.logo_url if biz else None,
         "currency": biz.currency if biz else "NGN",
         "business": {
-            "name": biz.name if biz else "AICB Studio",
+            "name": biz.name if biz else "CommB Studio",
             "logo_url": biz.logo_url if biz else None,
             "currency": biz.currency if biz else "NGN",
         } if biz else None,
@@ -138,7 +138,7 @@ async def initialize_instance(req: SetupInitRequest, db: AsyncSession = Depends(
 
     return {
         "status": "initialized",
-        "message": "AICB Instance successfully initialized.",
+        "message": "CommB Instance successfully initialized.",
         "access_token": token,
         "token": token,
         "platform_api_key": raw_key,

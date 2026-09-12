@@ -41,7 +41,11 @@ widget/.npm/
 # Environment, Secrets & Local DBs
 .env
 *.env
-aicb.db
+# Any .env variant (.env.local, .env.backup, ...) — these hold real secrets.
+# The tracked template is .env.example, re-included below.
+.env.*
+!.env.example
+commb.db
 *.db
 *.sqlite
 *.sqlite3

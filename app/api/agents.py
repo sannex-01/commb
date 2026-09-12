@@ -135,7 +135,7 @@ async def list_agents(
     current_user: AdminUser = Depends(get_current_admin_user),
     db: AsyncSession = Depends(get_db),
 ):
-    """Lists all agents configured on this AICB instance."""
+    """Lists all agents configured on this CommB instance."""
     res = await db.execute(select(Agent).options(selectinload(Agent.group)).order_by(Agent.created_at.asc()))
     agents = res.scalars().all()
     return [_serialize_agent(a) for a in agents]

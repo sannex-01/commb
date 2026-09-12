@@ -20,10 +20,10 @@ class SSORequest(BaseModel):
 @router.post("/sso")
 async def sso_login(req: SSORequest, response: Response, db: AsyncSession = Depends(get_db)):
     """Verifies a short-lived AgentOS SSO token and logs in the operator."""
-    if not settings.AICB_API_KEY:
+    if not settings.COMMB_API_KEY:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="AICB_API_KEY not configured. SSO disabled."
+            detail="COMMB_API_KEY not configured. SSO disabled."
         )
 
     # Decode and verify the SSO token (JWT structure: header.payload.signature)
@@ -33,7 +33,7 @@ async def sso_login(req: SSORequest, response: Response, db: AsyncSession = Depe
     
     header_b64, payload_b64, sig_b64 = parts
     expected_sig = hmac.new(
-        settings.AICB_API_KEY.encode("utf-8"),
+        settings.COMMB_API_KEY.encode("utf-8"),
         f"{header_b64}.{payload_b64}".encode("utf-8"),
         hashlib.sha256
     ).digest()
@@ -77,7 +77,7 @@ async def sso_login(req: SSORequest, response: Response, db: AsyncSession = Depe
     # Issue standard admin session JWT
     session_token = create_admin_jwt(user.id, user.email, user.role)
     response.set_cookie(
-        key="aicb_admin_session",
+        key="commb_admin_session",
         value=session_token,
         httponly=True,
         samesite="lax",

@@ -2,7 +2,7 @@ import logging
 import sys
 from app.core.config import settings
 
-def setup_logger(name: str = "aicb") -> logging.Logger:
+def setup_logger(name: str = "commb") -> logging.Logger:
     logger = logging.getLogger(name)
     if not logger.handlers:
         logger.setLevel(logging.DEBUG if settings.DEBUG else logging.INFO)

@@ -3,12 +3,12 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "aicb"
-version = "0.1.0"
-description = "Open-Source AI Commerce Bots & Omnichannel Customer Service Platform"
+name = "commb"
+version = "0.2.0"
+description = "CommB (Commercial Bots) — Open-Source AI Commerce Bots & Omnichannel Customer Service Platform"
 readme = "README.md"
 requires-python = ">=3.10"
-license = { text = "MIT" }
+license = { text = "AGPL-3.0-or-later" }
 authors = [
     { name = "Sannex Tech LTD", email = "info@sannex.ng" },
 ]
@@ -18,7 +18,7 @@ keywords = [
     "commerce",
     "whatsapp",
     "telegram",
-    "agentos",
+    "commb",
     "fastapi",
     "customer-service",
     "llm",
@@ -27,7 +27,7 @@ classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "Intended Audience :: Information Technology",
-    "License :: OSI Approved :: MIT License",
+    "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -51,11 +51,16 @@ dependencies = [
     "apscheduler>=3.10.4",
     "slowapi>=0.1.9",
     "python-multipart>=0.0.9",
-    "sannex-agent>=0.1.4",
     "Pillow>=10.0.0",
 ]
 
 [project.optional-dependencies]
+# Optional telemetry backend. A self-hosted CommB never phones home, so the
+# SDK is not a runtime requirement — install `commb[telemetry]` only if you
+# are pointing an instance at a collector such as Commb.app.
+telemetry = [
+    "commb-agent>=0.3.0",
+]
 dev = [
     "pytest>=8.3.0",
     "pytest-asyncio>=0.23.0",
@@ -64,13 +69,13 @@ dev = [
 ]
 
 [project.scripts]
-aicb = "app.cli:main"
+commb = "app.cli:main"
 
 [project.urls]
-Homepage = "https://aicb.sannex.ng"
-Documentation = "https://docs.aicb.sannex.ng"
-Repository = "https://github.com/sannex-01/aicb"
-Issues = "https://github.com/sannex-01/aicb/issues"
+Homepage = "https://commb.app"
+Documentation = "https://docs.commb.app"
+Repository = "https://github.com/samakins/commb"
+Issues = "https://github.com/samakins/commb/issues"
 
 [tool.setuptools.packages.find]
 where = ["."]

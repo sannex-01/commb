@@ -1,1 +1,1 @@
-"""Core module for AICB."""
+"""Core module for CommB."""

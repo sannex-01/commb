@@ -3,9 +3,9 @@ import { createBubble } from "./bubble";
 import { WidgetPanel } from "./panel";
 
 function getBaseUrl(): string {
-  // The script is served BY the business's own aicb instance, so the origin
+  // The script is served BY the business's own commb instance, so the origin
   // of the currently-executing script tag IS the instance URL — no separate
-  // config is needed beyond data-bot-id (currently cosmetic; aicb has no
+  // config is needed beyond data-bot-id (currently cosmetic; commb has no
   // multi-tenant request routing to scope by).
   const current = document.currentScript as HTMLScriptElement | null;
   if (current?.src) {

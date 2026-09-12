@@ -25,7 +25,7 @@ export function updateAppTitle(pageName, isPublic = false) {
   if (isPublic) {
     document.title = pageName ? `AI Commerce Bots | ${pageName}` : 'AI Commerce Bots | Omnichannel AI Support Platform';
   } else {
-    document.title = pageName ? `${pageName} | AICB` : 'AICB Studio';
+    document.title = pageName ? `${pageName} | CommB` : 'CommB Studio';
   }
 }
 
@@ -46,7 +46,7 @@ async function initHostPostHog() {
       // PostHog snippet loader
       (function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)})(document,window.posthog||[]);
       window.posthog.init(apiKey, { api_host: apiHost, person_profiles: 'identified_only' });
-      console.log("[AICB] Host PostHog initialized.");
+      console.log("[CommB] Host PostHog initialized.");
     }
   } catch (e) {
     // PostHog setup silently skips on failure
@@ -66,7 +66,7 @@ export async function initApp() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.detail || 'SSO failed');
       
-      localStorage.setItem('aicb_admin_token', data.access_token);
+      localStorage.setItem('commb_admin_token', data.access_token);
       showToast('Logged in via AgentOS', 'success');
       navigate('/_/admin/overview');
       return;
@@ -81,7 +81,7 @@ export async function initApp() {
     const sys = await api('/system/health-summary');
     if (sys?.version) {
       state.appVersion = sys.version;
-      state.appName = sys.app_name || 'AICB (AI Commerce Bots)';
+      state.appName = sys.app_name || 'CommB (AI Commerce Bots)';
       state.instanceId = sys.instance_id || null;
     }
   } catch (e) {
@@ -106,7 +106,7 @@ export async function initApp() {
     console.error("Setup check error:", e);
   }
 
-  const storedToken = localStorage.getItem('aicb_admin_token');
+  const storedToken = localStorage.getItem('commb_admin_token');
   if (storedToken) {
     try {
       const authData = await api('/auth/me');
@@ -114,7 +114,7 @@ export async function initApp() {
       state.business = authData.business;
       initHostPostHog();
     } catch {
-      localStorage.removeItem('aicb_admin_token');
+      localStorage.removeItem('commb_admin_token');
       state.user = null;
       state.business = null;
     }
@@ -132,7 +132,7 @@ export async function initApp() {
 
 // 7-day periodic sponsor reminder banner
 function checkPeriodicSponsorPopup() {
-  const lastDismissed = localStorage.getItem('aicb_sponsor_dismissed_at');
+  const lastDismissed = localStorage.getItem('commb_sponsor_dismissed_at');
   const sevenDaysMs = 7 * 24 * 60 * 60 * 1000;
   if (!lastDismissed || (Date.now() - Number(lastDismissed) > sevenDaysMs)) {
     setTimeout(showWeeklySponsorBanner, 3000);
@@ -153,7 +153,7 @@ function showWeeklySponsorBanner() {
       </div>
       <div class="space-y-1 min-w-0 flex-1">
         <div class="flex items-center justify-between">
-          <h4 class="text-xs font-bold text-white">Loving AICB?</h4>
+          <h4 class="text-xs font-bold text-white">Loving CommB?</h4>
           <button onclick="dismissSponsorBanner()" class="text-slate-400 hover:text-white p-0.5 rounded transition-colors" title="Remind in 7 days">
             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
           </button>
@@ -162,10 +162,10 @@ function showWeeklySponsorBanner() {
           Support ongoing open-source development by starring our repo on GitHub or sponsoring us!
         </p>
         <div class="flex items-center gap-2 pt-2">
-          <a href="https://github.com/sannex-01/aicb" target="_blank" rel="noreferrer" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-[12px] font-semibold flex items-center gap-1 transition-all">
+          <a href="https://github.com/samakins/commb" target="_blank" rel="noreferrer" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-[12px] font-semibold flex items-center gap-1 transition-all">
             ⭐ Star on GitHub
           </a>
-          <a href="https://github.com/sponsors/sannex-01" target="_blank" rel="noreferrer" class="px-2.5 py-1 rounded-lg bg-pink-600 hover:bg-pink-500 text-white text-[12px] font-semibold flex items-center gap-1 transition-all">
+          <a href="https://github.com/sponsors/samakins" target="_blank" rel="noreferrer" class="px-2.5 py-1 rounded-lg bg-pink-600 hover:bg-pink-500 text-white text-[12px] font-semibold flex items-center gap-1 transition-all">
             ❤️ Sponsor
           </a>
         </div>
@@ -179,7 +179,7 @@ function showWeeklySponsorBanner() {
 window.dismissSponsorBanner = function() {
   const banner = document.getElementById('weekly-sponsor-banner');
   if (banner) banner.remove();
-  localStorage.setItem('aicb_sponsor_dismissed_at', String(Date.now()));
+  localStorage.setItem('commb_sponsor_dismissed_at', String(Date.now()));
 };
 
 export function renderApp() {
@@ -276,7 +276,7 @@ function renderAdminShell(container, currentPath) {
   updateAppTitle(activeLabel, false);
 
   const business = state.business || state.user?.business || {};
-  const businessName = business.name || 'AICB Studio';
+  const businessName = business.name || 'CommB Studio';
   const logoUrl = business.logo_url;
   const initial = (businessName.trim().charAt(0) || 'A').toUpperCase();
 
@@ -309,7 +309,7 @@ function renderAdminShell(container, currentPath) {
             </div>
             ${!state.sidebarCollapsed ? `
             <div class="min-w-0 flex-1">
-              <p class="font-bold text-[14px] text-main truncate">AICB Studio</p>
+              <p class="font-bold text-[14px] text-main truncate">CommB Studio</p>
               <div class="flex items-center gap-1 mt-0.5">
                 <span class="w-1.5 h-1.5 rounded-full bg-brand flex-shrink-0 animate-pulse"></span>
                 <p class="text-[12px] text-muted truncate" id="sidebar-business-name">${escapeHtml(businessName)}</p>
@@ -378,7 +378,7 @@ function renderAdminShell(container, currentPath) {
           
           <!-- Help Button (Triggers n8n-style Menu Popover) -->
           <div class="relative">
-            <button type="button" id="sidebar-help-btn" class="w-full flex items-center ${state.sidebarCollapsed ? 'justify-center' : 'justify-between'} px-2 py-1.5 rounded-lg text-[14px] font-medium text-muted hover:text-main hover:bg-surface-hover transition-colors group cursor-pointer" onclick="window.toggleHelpMenu(event)" title="Help, Documentation & About AICB">
+            <button type="button" id="sidebar-help-btn" class="w-full flex items-center ${state.sidebarCollapsed ? 'justify-center' : 'justify-between'} px-2 py-1.5 rounded-lg text-[14px] font-medium text-muted hover:text-main hover:bg-surface-hover transition-colors group cursor-pointer" onclick="window.toggleHelpMenu(event)" title="Help, Documentation & About CommB">
               <div class="flex items-center gap-2 min-w-0">
                 <i data-lucide="help-circle" class="${state.sidebarCollapsed ? 'w-[18px] h-[18px]' : 'w-4 h-4'} text-muted group-hover:text-main flex-shrink-0"></i>
                 ${!state.sidebarCollapsed ? `<span class="truncate">Help</span>` : ''}
@@ -446,7 +446,7 @@ function renderAdminShell(container, currentPath) {
   };
   window.updateSidebarBrand = function() {
     const b = state.business || state.user?.business || {};
-    const bName = b.name || 'AICB Studio';
+    const bName = b.name || 'CommB Studio';
     const bLogo = b.logo_url;
     const bInit = (bName.trim().charAt(0) || 'A').toUpperCase();
 
@@ -468,13 +468,13 @@ function renderAdminShell(container, currentPath) {
 
   window.toggleSidebar = function() {
     state.sidebarCollapsed = !state.sidebarCollapsed;
-    localStorage.setItem('aicb_sidebar_collapsed', String(state.sidebarCollapsed));
+    localStorage.setItem('commb_sidebar_collapsed', String(state.sidebarCollapsed));
     renderAdminShell(container, currentPath);
   };
 
   window.logout = async function() {
     try { await api('/auth/logout', { method: 'POST' }); } catch {}
-    localStorage.removeItem('aicb_admin_token');
+    localStorage.removeItem('commb_admin_token');
     state.user = null;
     state.business = null;
     navigate('/_/admin/login');
@@ -498,34 +498,34 @@ function renderAdminShell(container, currentPath) {
     
     popover.innerHTML = `
       <div class="p-1.5 space-y-0.5 text-[14px]">
-        <a href="https://agentos.sannex.ng/docs/getting-started/quickstart" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-muted hover:text-main hover:bg-surface-hover transition-colors">
+        <a href="https://commb.app/docs/getting-started/quickstart" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-muted hover:text-main hover:bg-surface-hover transition-colors">
           <svg class="w-4 h-4 text-sky-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
           <span>Quickstart</span>
         </a>
 
-        <a href="https://agentos.sannex.ng/docs" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-muted hover:text-main hover:bg-surface-hover transition-colors">
+        <a href="https://commb.app/docs" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-muted hover:text-main hover:bg-surface-hover transition-colors">
           <svg class="w-4 h-4 text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
           <span>Documentation</span>
         </a>
 
-        <a href="https://github.com/sannex-01/aicb/discussions" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-muted hover:text-main hover:bg-surface-hover transition-colors">
+        <a href="https://github.com/samakins/commb/discussions" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-muted hover:text-main hover:bg-surface-hover transition-colors">
           <svg class="w-4 h-4 text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
           <span>Forum & Community</span>
         </a>
 
-        <a href="https://agentos.sannex.ng/docs" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-muted hover:text-main hover:bg-surface-hover transition-colors">
+        <a href="https://commb.app/docs" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-muted hover:text-main hover:bg-surface-hover transition-colors">
           <svg class="w-4 h-4 text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" /></svg>
           <span>Course & Tutorials</span>
         </a>
 
-        <a href="https://github.com/sannex-01/aicb/issues/new?labels=bug-report" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-muted hover:text-main hover:bg-surface-hover transition-colors">
+        <a href="https://github.com/samakins/commb/issues/new?labels=bug-report" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-muted hover:text-main hover:bg-surface-hover transition-colors">
           <svg class="w-4 h-4 text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
           <span>Report a bug</span>
         </a>
 
         <button onclick="window.openAboutModal(); document.getElementById('n8n-help-popover')?.remove();" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-muted hover:text-main hover:bg-surface-hover transition-colors text-left cursor-pointer">
           <svg class="w-4 h-4 text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-          <span>About AICB</span>
+          <span>About CommB</span>
         </button>
       </div>
 
@@ -540,7 +540,7 @@ function renderAdminShell(container, currentPath) {
         </button>
 
         <!-- Full Changelog Link (Opens Blog Site Directly) -->
-        <a href="https://agentos.sannex.ng/blog" target="_blank" rel="noopener noreferrer" class="w-full flex items-center justify-between text-[13px] text-sky-600 dark:text-sky-400 hover:underline font-semibold pt-1">
+        <a href="https://commb.app/blog" target="_blank" rel="noopener noreferrer" class="w-full flex items-center justify-between text-[13px] text-sky-600 dark:text-sky-400 hover:underline font-semibold pt-1">
           <span>Full changelog</span>
           <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
         </a>
@@ -564,9 +564,9 @@ function renderAdminShell(container, currentPath) {
     setTimeout(() => document.addEventListener('click', closeListener), 10);
   };
 
-  // About AICB Modal
+  // About CommB Modal
   window.openAboutModal = async function() {
-    let existing = document.getElementById('about-aicb-modal');
+    let existing = document.getElementById('about-commb-modal');
     if (existing) existing.remove();
 
     const version = state.appVersion || '0.1.0';
@@ -580,7 +580,7 @@ function renderAdminShell(container, currentPath) {
     } catch {}
 
     const modal = document.createElement('div');
-    modal.id = 'about-aicb-modal';
+    modal.id = 'about-commb-modal';
     modal.className = 'fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in font-sans';
     modal.onclick = (e) => {
       if (e.target === modal) modal.remove();
@@ -596,11 +596,11 @@ function renderAdminShell(container, currentPath) {
               A
             </div>
             <div>
-              <h3 class="text-sm font-bold text-main">AI Commerce Bots (AICB)</h3>
+              <h3 class="text-sm font-bold text-main">AI Commerce Bots (CommB)</h3>
               <p class="text-[12px] text-muted">Version <span class="font-mono text-emerald-600 dark:text-emerald-400 font-semibold">v${escapeHtml(version)}</span></p>
             </div>
           </div>
-          <button class="text-muted hover:text-main p-1.5 rounded-lg hover:bg-surface-hover transition-colors cursor-pointer" onclick="document.getElementById('about-aicb-modal')?.remove()" title="Close">
+          <button class="text-muted hover:text-main p-1.5 rounded-lg hover:bg-surface-hover transition-colors cursor-pointer" onclick="document.getElementById('about-commb-modal')?.remove()" title="Close">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
           </button>
         </div>
@@ -613,24 +613,24 @@ function renderAdminShell(container, currentPath) {
 
           <div class="space-y-2.5 p-3.5 rounded-lg bg-surface-elevated/50 border border-subtle text-[12px] font-mono">
             <div class="flex items-start justify-between gap-3">
-              <span class="text-muted shrink-0">AICB Version:</span>
+              <span class="text-muted shrink-0">CommB Version:</span>
               <span class="text-main font-semibold text-right">v${escapeHtml(version)}</span>
             </div>
             <div class="flex items-start justify-between gap-3">
               <span class="text-muted shrink-0">Source Code:</span>
-              <a href="https://github.com/sannex-01/aicb" target="_blank" rel="noopener noreferrer" class="text-sky-600 dark:text-sky-400 hover:underline break-all text-right font-sans">
-                https://github.com/sannex-01/aicb
+              <a href="https://github.com/samakins/commb" target="_blank" rel="noopener noreferrer" class="text-sky-600 dark:text-sky-400 hover:underline break-all text-right font-sans">
+                https://github.com/samakins/commb
               </a>
             </div>
             <div class="flex items-start justify-between gap-3">
               <span class="text-muted shrink-0">License:</span>
-              <a href="https://agentos.sannex.ng/docs/licenses" target="_blank" rel="noopener noreferrer" class="text-sky-600 dark:text-sky-400 hover:underline text-right font-sans">
-                Sustainable Use License + AICB Enterprise
+              <a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank" rel="noopener noreferrer" class="text-sky-600 dark:text-sky-400 hover:underline text-right font-sans">
+                AGPL-3.0-or-later
               </a>
             </div>
             <div class="flex items-start justify-between gap-3">
               <span class="text-muted shrink-0">Third-Party:</span>
-              <a href="https://agentos.sannex.ng/docs/licenses" target="_blank" rel="noopener noreferrer" class="text-sky-600 dark:text-sky-400 hover:underline text-right font-sans">
+              <a href="https://commb.app/docs/licenses" target="_blank" rel="noopener noreferrer" class="text-sky-600 dark:text-sky-400 hover:underline text-right font-sans">
                 View all third-party licenses
               </a>
             </div>
@@ -647,7 +647,7 @@ function renderAdminShell(container, currentPath) {
           </div>
 
           <div class="flex items-center justify-between pt-2 border-t border-subtle text-[12px]">
-            <a href="https://github.com/sannex-01/aicb" target="_blank" rel="noopener noreferrer" class="text-sky-600 dark:text-sky-400 hover:underline flex items-center gap-1 font-semibold">
+            <a href="https://github.com/samakins/commb" target="_blank" rel="noopener noreferrer" class="text-sky-600 dark:text-sky-400 hover:underline flex items-center gap-1 font-semibold">
               <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
               <span>GitHub Repository</span>
             </a>
@@ -656,7 +656,7 @@ function renderAdminShell(container, currentPath) {
         </div>
 
         <div class="p-3 border-t border-subtle bg-surface-elevated/40 flex justify-end">
-          <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('about-aicb-modal')?.remove()">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('about-commb-modal')?.remove()">
             Close
           </button>
         </div>
@@ -671,7 +671,7 @@ function renderAdminShell(container, currentPath) {
       debugBtn.onclick = async () => {
         try {
           const info = debugData || await api('/system/debug-info').catch(() => null) || {
-            aicb_version: version,
+            commb_version: version,
             instance_id: instanceId,
             user_agent: navigator.userAgent,
             timestamp: new Date().toISOString()
@@ -714,7 +714,7 @@ function renderAdminShell(container, currentPath) {
             </div>
           </div>
           <div class="flex items-center gap-2.5">
-            <a href="https://agentos.sannex.ng/docs" target="_blank" class="px-4 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-semibold text-[14px] transition-all shadow-sm">
+            <a href="https://commb.app/docs" target="_blank" class="px-4 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-semibold text-[14px] transition-all shadow-sm">
               Update
             </a>
             <button class="text-muted hover:text-main p-1.5 rounded-lg hover:bg-surface-hover transition-colors cursor-pointer" onclick="document.getElementById('whats-new-modal')?.remove()" title="Close">
@@ -727,7 +727,7 @@ function renderAdminShell(container, currentPath) {
         <div class="p-3.5 mx-6 mt-5 rounded-xl callout-amber flex items-start gap-3 text-[14px] leading-relaxed">
           <span class="text-base flex-shrink-0">⚠️</span>
           <div>
-            You're currently on version <strong class="font-mono font-bold">${escapeHtml(version)}</strong>. Update to get all new features, improvements, and fixes. See what changed <a href="https://agentos.sannex.ng/blog" target="_blank" class="underline font-bold">in the full changelog</a>.
+            You're currently on version <strong class="font-mono font-bold">${escapeHtml(version)}</strong>. Update to get all new features, improvements, and fixes. See what changed <a href="https://commb.app/blog" target="_blank" class="underline font-bold">in the full changelog</a>.
           </div>
         </div>
 
@@ -736,14 +736,14 @@ function renderAdminShell(container, currentPath) {
           <h4 class="text-[16px] font-bold text-main">AI Assistant on self-hosted: setup in minutes</h4>
           
           <p>
-            Setting up the <strong class="text-main font-semibold">AI Assistant</strong> on self-hosted AICB enables automated conversational checkouts, unified multi-agent grounding (RAG), and zero-latency webhook routing across WhatsApp Cloud, Telegram, and the Website Widget.
+            Setting up the <strong class="text-main font-semibold">AI Assistant</strong> on self-hosted CommB enables automated conversational checkouts, unified multi-agent grounding (RAG), and zero-latency webhook routing across WhatsApp Cloud, Telegram, and the Website Widget.
           </p>
 
           <p class="font-medium text-main">New instance? Run the following in your terminal:</p>
 
           <div class="terminal-snippet p-3.5 rounded-xl flex items-center justify-between text-[12px] my-2 font-mono">
-            <span class="select-all">curl -fsSL https://get.aicb.sannex.ng | sh</span>
-            <button onclick="navigator.clipboard.writeText('curl -fsSL https://get.aicb.sannex.ng | sh'); window.showToast('Copied to clipboard', 'success');" class="text-slate-400 hover:text-white px-2.5 py-1 bg-slate-800 hover:bg-slate-700 rounded-md transition-colors text-[12px] shrink-0 font-sans cursor-pointer">
+            <span class="select-all">curl -fsSL https://get.commb.app | sh</span>
+            <button onclick="navigator.clipboard.writeText('curl -fsSL https://get.commb.app | sh'); window.showToast('Copied to clipboard', 'success');" class="text-slate-400 hover:text-white px-2.5 py-1 bg-slate-800 hover:bg-slate-700 rounded-md transition-colors text-[12px] shrink-0 font-sans cursor-pointer">
               Copy
             </button>
           </div>
@@ -753,7 +753,7 @@ function renderAdminShell(container, currentPath) {
           </p>
 
           <p>
-            Already on Docker? Pull the latest container <code class="text-main font-mono bg-surface-elevated px-1.5 py-0.5 rounded border border-subtle text-[12px]">sannex/aicb:latest</code> and follow the setup docs to add payments and web search.
+            Already on Docker? Pull the latest container <code class="text-main font-mono bg-surface-elevated px-1.5 py-0.5 rounded border border-subtle text-[12px]">samakins/commb:latest</code> and follow the setup docs to add payments and web search.
           </p>
 
           <p>
@@ -761,7 +761,7 @@ function renderAdminShell(container, currentPath) {
           </p>
 
           <div class="pt-2">
-            <a href="https://agentos.sannex.ng/docs" target="_blank" class="text-rose-500 hover:text-rose-400 font-semibold inline-flex items-center gap-1 hover:underline text-[14px]">
+            <a href="https://commb.app/docs" target="_blank" class="text-rose-500 hover:text-rose-400 font-semibold inline-flex items-center gap-1 hover:underline text-[14px]">
               <span>Learn more here</span>
               <span>&rarr;</span>
             </a>
@@ -798,7 +798,7 @@ function renderAdminShell(container, currentPath) {
             </div>
             <div class="min-w-0">
               <div class="flex items-center gap-2">
-                <h3 class="font-bold text-sm text-main truncate">AICB Releases</h3>
+                <h3 class="font-bold text-sm text-main truncate">CommB Releases</h3>
                 <span class="badge badge-emerald text-xs font-mono px-1.5 py-0.5">v${escapeHtml(state.appVersion || '0.1.0')}</span>
               </div>
               <p class="text-xs text-muted truncate">Synchronized from AgentOS</p>
@@ -851,7 +851,7 @@ function renderAdminShell(container, currentPath) {
         return;
       }
 
-      const agentosHost = 'https://agentos.sannex.ng';
+      const agentosHost = 'https://commb.app';
       container.innerHTML = releases.map((rel, idx) => `
         <a href="${escapeHtml(rel.download_url || `${agentosHost}/blog`)}" target="_blank" rel="noopener noreferrer" class="block p-3.5 rounded-xl border border-subtle bg-surface-elevated/50 hover:bg-surface-hover transition-all group">
           <div class="flex items-center justify-between gap-2 mb-1">

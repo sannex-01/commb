@@ -69,7 +69,7 @@ async def test_root_endpoint_serves_json(client: AsyncClient):
     assert response.status_code == 200
     data = response.json()
     assert "version" in data
-    assert data["version"] == "0.1.0"
+    assert data["version"] == "0.2.0"
 
 
 @pytest.mark.asyncio
@@ -91,7 +91,7 @@ async def test_system_debug_info_endpoint(client: AsyncClient):
     response = await client.get("/api/v1/system/debug-info")
     assert response.status_code == 200
     data = response.json()
-    assert data["aicb_version"] == "0.1.0"
+    assert data["commb_version"] == "0.2.0"
     assert "instance_id" in data
     assert "python_version" in data
     assert "platform" in data

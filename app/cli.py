@@ -1,5 +1,5 @@
 """
-AICB Command Line Interface (CLI)
+CommB Command Line Interface (CLI)
 Entrypoint for standalone Python package and terminal operations.
 """
 
@@ -11,7 +11,7 @@ from app.core.config import settings
 
 
 def run_start(args):
-    """Launch the AICB FastAPI / Uvicorn server."""
+    """Launch the CommB FastAPI / Uvicorn server."""
     port = args.port or settings.PORT or 8422
     host = args.host or settings.HOST or "0.0.0.0"
     reload = args.reload
@@ -22,7 +22,7 @@ def run_start(args):
         settings.DATABASE_URL = args.db_url
 
     print("=" * 60)
-    print(f"[*] Starting AICB Assistant v{settings.APP_VERSION}")
+    print(f"[*] Starting CommB Assistant v{settings.APP_VERSION}")
     print(f"[*] Server Address: http://{host}:{port}")
     print(f"[*] Admin Portal:   http://{host}:{port}/_/admin")
     print(f"[*] Database URL:   {settings.DATABASE_URL.split('://')[0]}://...")
@@ -48,7 +48,7 @@ def run_doctor(args):
         # Fallback if running as an installed package
         from app.core.database import init_db
         async def quick_check():
-            print("[*] Running AICB Doctor Diagnostic...")
+            print("[*] Running CommB Doctor Diagnostic...")
             try:
                 await init_db()
                 print(f"  [OK] Database ({settings.DATABASE_URL.split('://')[0]}) initialized successfully!")
@@ -61,25 +61,25 @@ def run_doctor(args):
 
 def run_version(args):
     """Display current version information."""
-    print(f"AICB Platform v{settings.APP_VERSION}")
+    print(f"CommB Platform v{settings.APP_VERSION}")
 
 
 def main():
-    """Main CLI entrypoint for `aicb` command."""
+    """Main CLI entrypoint for `commb` command."""
     parser = argparse.ArgumentParser(
-        prog="aicb",
-        description="AICB - Open-Source AI Commerce Bots & Omnichannel Customer Support Platform",
+        prog="commb",
+        description="CommB - Open-Source AI Commerce Bots & Omnichannel Customer Support Platform",
     )
     parser.add_argument(
         "-v", "--version",
         action="version",
-        version=f"AICB v{settings.APP_VERSION}",
+        version=f"CommB v{settings.APP_VERSION}",
     )
 
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
-    # `aicb start`
-    start_parser = subparsers.add_parser("start", help="Start the AICB application server")
+    # `commb start`
+    start_parser = subparsers.add_parser("start", help="Start the CommB application server")
     start_parser.add_argument(
         "-p", "--port",
         type=int,
@@ -96,7 +96,7 @@ def main():
         "--db-url",
         type=str,
         default=None,
-        help="Custom Database URL (e.g. postgresql+asyncpg://user:pass@host:5432/aicb)",
+        help="Custom Database URL (e.g. postgresql+asyncpg://user:pass@host:5432/commb)",
     )
     start_parser.add_argument(
         "--reload",
@@ -111,18 +111,18 @@ def main():
     )
     start_parser.set_defaults(func=run_start)
 
-    # `aicb doctor`
+    # `commb doctor`
     doctor_parser = subparsers.add_parser("doctor", help="Run preflight diagnostics and health checks")
     doctor_parser.set_defaults(func=run_doctor)
 
-    # `aicb version`
-    version_parser = subparsers.add_parser("version", help="Print the AICB version")
+    # `commb version`
+    version_parser = subparsers.add_parser("version", help="Print the CommB version")
     version_parser.set_defaults(func=run_version)
 
     args = parser.parse_args()
 
     if not args.command:
-        # Default behavior when running `aicb` without arguments is to start the server
+        # Default behavior when running `commb` without arguments is to start the server
         args.port = None
         args.host = None
         args.db_url = None

@@ -308,7 +308,7 @@ export async function loadIntegrationsPage(container) {
           <div class="flex items-center justify-between">
             <div>
               <h3 class="font-bold text-base text-main">Payment Gateway</h3>
-              <p class="text-xs text-muted mt-0.5">Configure how AICB generates checkout and instant payment links across conversations</p>
+              <p class="text-xs text-muted mt-0.5">Configure how CommB generates checkout and instant payment links across conversations</p>
             </div>
             <span class="badge ${pm.configured ? 'badge-emerald' : 'badge-subtle'}">
               ${pm.configured ? `<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1 animate-pulse"></span> Active: ${escapeHtml(currentProvider.charAt(0).toUpperCase() + currentProvider.slice(1))}` : 'Disabled'}
@@ -675,7 +675,7 @@ export async function loadIntegrationsPage(container) {
                       <button type="button" id="btn-rotate-wa-token-icon" class="absolute left-2.5 text-muted hover:text-brand transition-colors p-1" title="Rotate verify token">
                         <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
                       </button>
-                      <input type="text" id="wa-verify-token" class="form-control text-xs font-mono pl-9 pr-14" value="${escapeHtml(wa.verify_token || 'aicb_webhook_verification_token_secret')}" placeholder="aicb_webhook_verify_token" />
+                      <input type="text" id="wa-verify-token" class="form-control text-xs font-mono pl-9 pr-14" value="${escapeHtml(wa.verify_token || 'commb_webhook_verification_token_secret')}" placeholder="commb_webhook_verify_token" />
                       <button type="button" class="btn btn-ghost btn-sm absolute right-1.5 text-xs text-muted hover:text-main px-2 py-0.5" onclick="navigator.clipboard.writeText(document.getElementById('wa-verify-token').value); showToast('Verify token copied!', 'success');">Copy</button>
                     </div>
                   </div>
@@ -1375,7 +1375,7 @@ export async function loadIntegrationsPage(container) {
                 </div>
                 <div class="form-group col-span-2 sm:col-span-1">
                   <label class="form-label">Upload Folder</label>
-                  <input type="text" id="cld-folder" class="form-control" placeholder="aicb_uploads" value="${escapeHtml(conf.folder || 'aicb_uploads')}" />
+                  <input type="text" id="cld-folder" class="form-control" placeholder="commb_uploads" value="${escapeHtml(conf.folder || 'commb_uploads')}" />
                 </div>
               </div>
             </div>
@@ -1390,7 +1390,7 @@ export async function loadIntegrationsPage(container) {
                 </div>
                 <div class="form-group col-span-2 sm:col-span-1">
                   <label class="form-label">Bucket Name</label>
-                  <input type="text" id="r2-bucket" class="form-control" placeholder="my-aicb-media" value="${escapeHtml(conf.bucket_name || '')}" />
+                  <input type="text" id="r2-bucket" class="form-control" placeholder="my-commb-media" value="${escapeHtml(conf.bucket_name || '')}" />
                 </div>
                 <div class="form-group col-span-2 sm:col-span-1">
                   <label class="form-label">Access Key ID</label>
@@ -1456,7 +1456,7 @@ export async function loadIntegrationsPage(container) {
             cloud_name: document.getElementById('cld-name').value.trim(),
             api_key: document.getElementById('cld-key').value.trim(),
             api_secret: document.getElementById('cld-secret').value.trim(),
-            folder: document.getElementById('cld-folder').value.trim() || 'aicb_uploads',
+            folder: document.getElementById('cld-folder').value.trim() || 'commb_uploads',
           };
         } else if (selected === 'cloudflare_r2') {
           configPayload = {

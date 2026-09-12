@@ -7,7 +7,7 @@ export async function renderResetPasswordView(container) {
   const urlParams = new URLSearchParams(window.location.search);
   const token = urlParams.get('token');
 
-  let bizName = state.business?.name || 'AICB Studio';
+  let bizName = state.business?.name || 'CommB Studio';
   let logoUrl = state.business?.logo_url || null;
 
   try {

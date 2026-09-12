@@ -11,7 +11,7 @@ export function renderSetupView(container) {
         <div class="w-12 h-12 rounded-lg bg-brand mx-auto flex items-center justify-center text-white font-bold text-xl mb-4 shadow-md">
           A
         </div>
-        <h1 class="text-2xl font-semibold text-main tracking-tight">Welcome to AICB</h1>
+        <h1 class="text-2xl font-semibold text-main tracking-tight">Welcome to CommB</h1>
         <p class="text-[14px] text-muted mt-1">Set up your business profile, super admin account & email delivery</p>
       </div>
 
@@ -278,11 +278,11 @@ export function renderSetupView(container) {
 
     try {
       const res = await api('/setup/initialize', { method: 'POST', body: JSON.stringify(payload) });
-      localStorage.setItem('aicb_admin_token', res.access_token);
+      localStorage.setItem('commb_admin_token', res.access_token);
       state.user = res.user;
       state.business = res.business;
       if (res.business?.name && window.updateAppTitle) window.updateAppTitle(res.business.name);
-      showToast('Setup complete! Welcome to AICB.', 'success');
+      showToast('Setup complete! Welcome to CommB.', 'success');
       navigate('/_/admin/overview');
     } catch (err) {
       btn.innerHTML = `Complete Setup <i data-lucide="check" class="w-4 h-4 ml-1"></i>`;

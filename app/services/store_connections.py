@@ -36,7 +36,7 @@ _ENV_FALLBACKS = {
 
 
 class StoreConnectionService:
-    """BYO-key settings for external platforms that provide a catalog aicb
+    """BYO-key settings for external platforms that provide a catalog commb
     can import (Bumpa, Paystack, ...) and — for some of them — can *also*
     process payments/checkout on their own. A business can toggle
     "share_for_payments" per provider so the one credential saved here

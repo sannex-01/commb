@@ -9,12 +9,12 @@ from app.core.logger import logger
 
 
 def shipping_context_from_address(shipping_address: Optional[str]) -> Optional[Dict[str, Any]]:
-    """aicb stores shipping_address as a single free-text string; Bumpa's
+    """commb stores shipping_address as a single free-text string; Bumpa's
     /shipping-options (called by BumpaClient.checkout_via_bumpa before
     Create Checkout) needs REAL structured street/city/state/country/zip to
     rate a shipment — a blank city/state/country will very likely make
     Bumpa's own rating fail or return zero options, not a graceful partial
-    match. aicb has no structured address collection today (only this one
+    match. commb has no structured address collection today (only this one
     free-text field), so this is a known, real limitation: Bumpa checkout
     only works reliably once a business's customer actually supplies a full
     structured address elsewhere. Not silently faking city/state/country
@@ -156,10 +156,10 @@ async def create_checkout_orders(
         order.checkout_url = payment_res.get("checkout_url")
 
         # Bumpa-specific: its payment-intent settles via a real Paystack
-        # charge under its own reference (not aicb's ORD-xxxx), so the
+        # charge under its own reference (not commb's ORD-xxxx), so the
         # Paystack webhook/callback needs to match THIS order by that
         # reference too — see payment_reference matching in
-        # app/commerce/payments/webhooks.py. order_reference stays aicb's
+        # app/commerce/payments/webhooks.py. order_reference stays commb's
         # own human-readable ORD-xxxx (used everywhere else: tracking,
         # button ids, custom fields) rather than being overwritten.
         # bumpa_checkout_id/bumpa_cart_token are stashed so

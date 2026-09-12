@@ -7,7 +7,7 @@ import { formatMessageHtml } from "./format";
 import type { BotResponse } from "./types";
 
 function getOrCreateSessionId(): string {
-  const key = "aicb_widget_session_id";
+  const key = "commb_widget_session_id";
   let id = localStorage.getItem(key);
   if (!id) {
     id = crypto.randomUUID();

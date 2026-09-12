@@ -262,7 +262,7 @@ function renderReportsView(container, data) {
       exportBtn.disabled = true;
       exportBtn.innerHTML = `<span>Exporting...</span>`;
       try {
-        const token = localStorage.getItem("aicb_admin_token") || localStorage.getItem("token");
+        const token = localStorage.getItem("commb_admin_token") || localStorage.getItem("token");
         const headers = token ? { "Authorization": `Bearer ${token}` } : {};
         const res = await fetch(`/api/v1/reports/export-csv?days=${currentDays}`, { headers });
         if (!res.ok) throw new Error("CSV Export failed");
@@ -271,7 +271,7 @@ function renderReportsView(container, data) {
         const a = document.createElement('a');
         a.style.display = 'none';
         a.href = url;
-        a.download = `aicb_report_${currentDays}d_${new Date().toISOString().slice(0, 10)}.csv`;
+        a.download = `commb_report_${currentDays}d_${new Date().toISOString().slice(0, 10)}.csv`;
         document.body.appendChild(a);
         a.click();
         window.URL.revokeObjectURL(url);

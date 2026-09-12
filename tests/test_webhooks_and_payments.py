@@ -47,7 +47,7 @@ async def test_whatsapp_webhook_verification(client: AsyncClient):
     # Test valid challenge
     params = {
         "hub.mode": "subscribe",
-        "hub.verify_token": "aicb_webhook_verification_token_secret",
+        "hub.verify_token": "commb_webhook_verification_token_secret",
         "hub.challenge": "1122334455",
     }
     res = await client.get("/api/v1/webhooks/whatsapp", params=params)

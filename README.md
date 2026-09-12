@@ -1,31 +1,48 @@
-# AICB (AI Commerce Bots)
+# CommB — Commercial Bots
 
-A modular, lightweight, and production-ready AI & Interactive Step Chatbot engine designed for WhatsApp Cloud API, Telegram, and an embeddable Website Widget, with Conversational Commerce powered by Paystack and Bumpa.
+Open-source AI commerce bots for WhatsApp Cloud API, Telegram, and an embeddable website widget, with conversational commerce powered by Paystack and Bumpa.
+
+**Self-host it for free, forever.** CommB is a complete, standalone application — there is no vendor lock-in, no phone-home telemetry, and no paid tier hiding features. If you would rather not run it yourself, managed hosting is available at [commb.app](https://commb.app).
+
+```bash
+docker run -p 8422:8000 samakins/commb:latest
+# then open http://localhost:8422/_/admin
+```
 
 ---
 
 ## Architecture & Deployment
 
-AICB runs as a standalone, autonomous conversational commerce hub with a built-in Single-Page Admin UI at **`/_/admin`**, paired seamlessly with [AgentOS](https://agentos.aicb.sannex.ng) for documentation, official releases, and telemetry.
+CommB runs as a standalone, autonomous conversational commerce hub with a built-in single-page admin UI at **`/_/admin`**. One instance serves one business, backed entirely by its own database — which is what makes it trivial to self-host and to run isolated per-tenant instances.
 
 ### 1. Standalone Multi-Agent Instance
 
-A single AICB instance runs its own complete admin studio at **`/_/admin`**, backed entirely by its database (SQLite in development, PostgreSQL in production):
+A single CommB instance runs its own complete admin studio at **`/_/admin`**, backed entirely by its database (SQLite in development, PostgreSQL in production):
 
 - **First-Run Onboarding (`/_/admin/setup`)**: Instantly creates the Super Admin account and business profile with store currency and brand assets.
 - **Multi-Agent Studio (`/_/admin/agents`)**: Deploy multiple distinct AI personas on the same deployment. Each agent can configure its own system prompt, LLM provider (Google Gemini, OpenAI, Groq, Anthropic), model parameters, access groups, and messaging channel credentials.
 - **Messaging Channels**:
   - **WhatsApp Cloud API**: Interactive buttons, list pickers, carousels, and encrypted Meta flows.
   - **Telegram Bot**: Automated webhook registration upon agent creation, inline secret token rotators, and interactive keyboards.
-  - **Website Widget**: Embeddable single-line script tag (`<script src="https://aicb.sannex.ng/widget.js" data-bot-id="default" async></script>`).
+  - **Website Widget**: Embeddable single-line script tag (`<script src="https://commb.app/widget.js" data-bot-id="default" async></script>`).
 - **Unified Commerce & Payments**: Direct integration with **Paystack** for automated checkout generation and instant order confirmations across conversations.
 - **Knowledge Base (RAG) & Catalog**: In-process hybrid BM25 + vector search and catalog scoping via access tags and access groups.
-- **Platform API Keys**: One-click generation and instant rotation for secure programmatic API access (`aicb_live_...`).
+- **Platform API Keys**: One-click generation and instant rotation for secure programmatic API access (`commb_live_...`).
 
-### 2. Sannex AgentOS Hub Integration
+### 2. Optional Telemetry (off by default)
 
-- **Releases & Documentation**: Release notes and updates are fetched directly from the open-source AgentOS hub (`https://agentos.aicb.sannex.ng/releases`) and rendered within AICB's floating sidebar releases drawer.
-- **Telemetry & Feedback**: Asynchronous background telemetry powered by the `sannex-agent` SDK.
+A self-hosted CommB instance never phones home. Telemetry is disabled unless you
+explicitly enable it and point it at a collector, and the SDK that implements it
+is an optional extra:
+
+```bash
+pip install "commb[telemetry]"
+# then set ENABLE_TELEMETRY=true and COMMB_TELEMETRY_KEY / COMMB_TELEMETRY_HOST
+```
+
+With it enabled, release notes are synced into the admin UI's releases drawer and
+usage analytics are dispatched in the background. With it disabled — the default —
+every one of those code paths is a no-op.
 
 ---
 
@@ -69,7 +86,7 @@ A single AICB instance runs its own complete admin studio at **`/_/admin`**, bac
 ### 1. Configure Environment
 ```bash
 cp .env.example .env
-# Configure DATABASE_URL, APP_SECRET, and optional SANNEX_API_KEY
+# Configure DATABASE_URL, APP_SECRET, and optional COMMB_TELEMETRY_KEY
 ```
 
 ### 2. Run Pre-flight System Doctor
@@ -101,7 +118,7 @@ Open [http://localhost:8422/docs](http://localhost:8422/docs) to explore the int
 | **Telegram Bot API** | `/api/v1/webhooks/telegram` or `/api/v1/webhooks/telegram/{agent_id}` | `POST` (Updates & Commands) |
 | **Paystack Webhook** | `/api/v1/payments/webhook/paystack` | `POST` (Charge events) |
 | **Bumpa Webhook** | `/api/v1/webhooks/bumpa` | `POST` (Product/Order updates) |
-| **Manual Releases Sync** | `/api/v1/sync` | `POST` (Triggers AgentOS release sync) |
+| **Manual Releases Sync** | `/api/v1/sync` | `POST` (Triggers remote release sync, if telemetry is enabled) |
 | **Setup Wizard** | `/api/v1/setup/status`, `/api/v1/setup/initialize` | `GET`, `POST` (First-run onboarding) |
 | **Admin Auth** | `/api/v1/auth/login`, `/api/v1/auth/me`, `/api/v1/auth/logout` | `POST`, `GET`, `POST` |
 | **Multi-Agent CRUD** | `/api/v1/agents` | `GET`, `POST`, `PUT /{id}`, `DELETE /{id}` |
@@ -115,7 +132,7 @@ Open [http://localhost:8422/docs](http://localhost:8422/docs) to explore the int
 ## Project Structure
 
 ```text
-aicb/
+commb/
 ├── app/
 │   ├── main.py                     # FastAPI application & lifespan
 │   ├── admin_ui/                   # Standalone Admin SPA (served at /_/admin)
@@ -126,7 +143,7 @@ aicb/
 │   ├── commerce/                   # CartManager, Catalog & Paystack integration, image storage
 │   ├── ai/                         # Multi-LLM providers (Gemini, OpenAI, Groq, Claude), RAG & memory
 │   ├── flows/                      # Deterministic 0-token fast-path conversational engine
-│   ├── telemetry/                  # Sannex telemetry dispatcher & release sync worker
+│   ├── telemetry/                  # Optional telemetry dispatcher & release sync worker
 │   └── models/                     # SQLAlchemy models (Customer, Order, CatalogItem, BusinessProfile, AdminUser, Agent, AccessGroup)
 ├── widget/                         # Embeddable website chat widget (Vite, builds to widget.js)
 ├── doctor.py                       # Pre-flight diagnostic tool
@@ -143,7 +160,26 @@ aicb/
 
 | Mechanism | Direction | Used for | Configured via |
 | :--- | :--- | :--- | :--- |
-| `aicb_live_...` platform key | External caller → AICB API | Programmatic API access | Generated and rotated from `/_/admin/settings` |
-| Admin JWT session | Browser → AICB Admin | `/_/admin` dashboard sessions | Signed with `APP_SECRET`, issued by `/api/v1/auth/login` |
-| `SANNEX_API_KEY` | AICB → AgentOS | Telemetry & Release Notes synchronization | `.env` |
-| Webhook Secrets | Provider → AICB | Meta, Telegram & Paystack verification | Verified cryptographically with rotation support |
+| `commb_live_...` platform key | External caller → CommB API | Programmatic API access | Generated and rotated from `/_/admin/settings` |
+| Admin JWT session | Browser → CommB Admin | `/_/admin` dashboard sessions | Signed with `APP_SECRET`, issued by `/api/v1/auth/login` |
+| `COMMB_TELEMETRY_KEY` | CommB → telemetry collector | Telemetry & Release Notes synchronization | `.env` |
+| Webhook Secrets | Provider → CommB | Meta, Telegram & Paystack verification | Verified cryptographically with rotation support |
+
+---
+
+## Licence
+
+CommB is licensed under the **GNU Affero General Public License v3.0 or later**
+([AGPL-3.0-or-later](LICENSE)).
+
+In plain terms:
+
+- **Self-hosting is free and unrestricted.** Run it for your own business, modify
+  it, and you owe nothing to anyone.
+- **If you modify CommB and offer it to others over a network**, you must make
+  your modified source available to those users under the same licence.
+- Copyright © 2026 **Sannex Tech LTD**.
+
+Managed hosting at [commb.app](https://commb.app) is a separate, optional
+commercial service — it sells convenience (provisioning, backups, custom domains,
+support), never features withheld from this repository.

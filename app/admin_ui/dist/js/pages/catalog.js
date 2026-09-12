@@ -652,7 +652,7 @@ function importCatalogModal() {
     const originalHtml = btn.innerHTML;
     btn.disabled = true;
     try {
-      const token = localStorage.getItem('aicb_admin_token');
+      const token = localStorage.getItem('commb_admin_token');
       const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
       const res = await fetch('/api/v1/admin/catalog/import/csv-template', { headers });
       if (!res.ok) throw new Error('Failed to download template');
@@ -661,7 +661,7 @@ function importCatalogModal() {
       const a = document.createElement('a');
       a.style.display = 'none';
       a.href = url;
-      a.download = 'aicb_product_import_template.csv';
+      a.download = 'commb_product_import_template.csv';
       document.body.appendChild(a);
       a.click();
       a.remove();
@@ -697,7 +697,7 @@ function importCatalogModal() {
       // application/json, which would break multipart/form-data's
       // browser-generated boundary (see uploadMediaFile in utils.js for
       // the same pattern).
-      const token = localStorage.getItem('aicb_admin_token');
+      const token = localStorage.getItem('commb_admin_token');
       const formData = new FormData();
       formData.append('file', file);
       const res = await fetch('/api/v1/admin/catalog/import/csv', {

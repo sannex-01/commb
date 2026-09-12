@@ -35,7 +35,7 @@ RUN pip install --no-cache-dir --default-timeout=1000 --retries=10 -r requiremen
 COPY . .
 COPY --from=widget-builder /widget/dist ./widget/dist
 
-# Install aicb package in editable/local mode for CLI availability
+# Install commb package in editable/local mode for CLI availability
 RUN pip install --no-cache-dir -e .
 
 EXPOSE 8422

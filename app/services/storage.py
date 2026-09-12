@@ -33,7 +33,7 @@ class StorageService:
                 "cloud_name": raw_config.get("cloud_name", ""),
                 "api_key": raw_config.get("api_key", ""),
                 "api_secret_masked": bool(raw_config.get("api_secret")),
-                "folder": raw_config.get("folder", "aicb_uploads"),
+                "folder": raw_config.get("folder", "commb_uploads"),
             }
         elif provider == "cloudflare_r2":
             safe_config = {
@@ -87,7 +87,7 @@ class StorageService:
             merged_config["cloud_name"] = cloud_name
             merged_config["api_key"] = api_key
             merged_config["api_secret"] = api_secret
-            merged_config["folder"] = (merged_config.get("folder") or "aicb_uploads").strip()
+            merged_config["folder"] = (merged_config.get("folder") or "commb_uploads").strip()
 
             meta["storage"] = {
                 "provider": "cloudinary",
@@ -180,7 +180,7 @@ class StorageService:
         cloud_name = config.get("cloud_name")
         api_key = config.get("api_key")
         api_secret = config.get("api_secret")
-        folder = config.get("folder", "aicb_uploads")
+        folder = config.get("folder", "commb_uploads")
 
         if not cloud_name or not api_key or not api_secret:
             raise ValueError("Cloudinary credentials incomplete (missing cloud name, API key, or API secret).")

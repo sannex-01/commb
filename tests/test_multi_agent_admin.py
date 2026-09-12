@@ -48,7 +48,7 @@ async def client(db_session):
 @pytest.mark.asyncio
 async def test_platform_api_key_generation():
     raw_key, key_hash, masked = generate_platform_api_key()
-    assert raw_key.startswith("aicb_live_")
+    assert raw_key.startswith("commb_live_")
     assert len(key_hash) == 64
     assert "..." in masked
 
@@ -75,7 +75,7 @@ async def test_first_run_setup_and_idempotency_lockout(client: AsyncClient):
     data = res.json()
     assert data["status"] == "initialized"
     assert "access_token" in data
-    assert data["platform_api_key"].startswith("aicb_live_")
+    assert data["platform_api_key"].startswith("commb_live_")
 
     token = data["access_token"]
     headers = {"Authorization": f"Bearer {token}"}
@@ -106,12 +106,12 @@ async def test_first_run_setup_and_idempotency_lockout(client: AsyncClient):
     # 7. Test API Key preview & Rotation
     key_info_res = await client.get("/api/v1/settings/api-key", headers=headers)
     assert key_info_res.status_code == 200
-    assert "aicb_live_" in key_info_res.json()["api_key_prefix"]
+    assert "commb_live_" in key_info_res.json()["api_key_prefix"]
 
     rotate_res = await client.post("/api/v1/settings/api-key/rotate", headers=headers)
     assert rotate_res.status_code == 200
     new_raw_key = rotate_res.json()["raw_api_key"]
-    assert new_raw_key.startswith("aicb_live_")
+    assert new_raw_key.startswith("commb_live_")
     assert new_raw_key != data["platform_api_key"]
 
 
@@ -327,7 +327,7 @@ async def test_admin_spa_static_and_fallback_routes(client: AsyncClient):
     res = await client.get("/_/admin")
     assert res.status_code == 200
     assert "text/html" in res.headers.get("content-type", "")
-    assert "AICB Admin" in res.text
+    assert "CommB Admin" in res.text
 
     # 2. Static CSS file
     res_css = await client.get("/_/admin/style.css")
@@ -343,7 +343,7 @@ async def test_admin_spa_static_and_fallback_routes(client: AsyncClient):
     res_deep = await client.get("/_/admin/agents")
     assert res_deep.status_code == 200
     assert "text/html" in res_deep.headers.get("content-type", "")
-    assert "AICB Admin" in res_deep.text
+    assert "CommB Admin" in res_deep.text
 
 
 @pytest.mark.asyncio
