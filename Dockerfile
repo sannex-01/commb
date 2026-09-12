@@ -1,42 +1,73 @@
 # ===================================================
-# Stage 1: Build embeddable web widget bundle
+# Stage 1: Build the embeddable web widget bundle
 # ===================================================
 FROM node:20-alpine AS widget-builder
 
 WORKDIR /widget
+
+# Dependencies before source, so this layer is reused whenever the lockfile is
+# unchanged. `npm ci` installs the lockfile exactly and skips resolution.
 COPY widget/package.json widget/package-lock.json* ./
-RUN npm install
+RUN npm ci --prefer-offline --no-audit --no-fund
+
 COPY widget/ ./
 RUN npm run build
 
 # ===================================================
-# Stage 2: Production Python Backend Container
+# Stage 2: Compile Python dependencies
 # ===================================================
-FROM python:3.11-slim
+# build-essential is ~363MB and is needed only to COMPILE packages with native
+# extensions. Doing that here and copying just the installed result into the
+# final stage keeps the compiler out of the shipped image.
+FROM python:3.11-slim AS python-builder
+
+ENV PYTHONDONTWRITEBYTECODE=1
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# A virtualenv gives one self-contained directory to copy across stages.
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir --upgrade pip \
+    && pip install --no-cache-dir --default-timeout=1000 --retries=10 -r requirements.txt
+
+# ===================================================
+# Stage 3: Runtime
+# ===================================================
+FROM python:3.11-slim AS runner
 
 WORKDIR /app
 
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     PORT=8422 \
-    HOST=0.0.0.0
+    HOST=0.0.0.0 \
+    PATH="/opt/venv/bin:$PATH"
 
-# Install minimal OS build dependencies & curl for healthcheck
+# curl is for the healthcheck only. No compiler here: anything needing one was
+# already built in stage 2.
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir --default-timeout=1000 --retries=10 -r requirements.txt
+# The compiled dependencies, without the toolchain that produced them.
+COPY --from=python-builder /opt/venv /opt/venv
 
-# Copy application source & built widget
 COPY . .
 COPY --from=widget-builder /widget/dist ./widget/dist
 
-# Install commb package in editable/local mode for CLI availability
-RUN pip install --no-cache-dir -e .
+# --no-deps: requirements.txt already installed everything, and without this pip
+# re-resolves the whole tree against the index on every build.
+RUN pip install --no-cache-dir --no-deps -e .
+
+# Run unprivileged: a compromise in the app should not be root in the container.
+RUN useradd --system --create-home --uid 1001 commb \
+    && chown -R commb:commb /app
+USER commb
 
 EXPOSE 8422
 

@@ -1,11 +1,42 @@
+# Python
 .venv
+venv
 __pycache__
 *.pyc
 *.pyo
 *.pyd
+*.egg-info
+.pytest_cache
+.mypy_cache
+.ruff_cache
+
+# Local database files must never ship inside an image: they would become the
+# starting state of every provisioned instance.
+*.db
+commb.db
+
+# VCS and tooling
 .git
 .gitignore
-.pytest_cache
-commb.db
+.github
+.claude
+
+# Widget: node_modules is never needed (the bundle is built in its own stage),
+# and dist is produced there too -- copying a stale host build would ship it.
 widget/node_modules
 widget/dist
+
+# Not needed at runtime
+tests
+docs
+*.md
+!README.md
+
+# Secrets are injected as environment variables, never baked into a layer.
+.env
+.env.*
+!.env.example
+
+# Build artefacts
+dist
+build
