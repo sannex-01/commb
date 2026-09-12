@@ -39,7 +39,7 @@ export default function Home(): ReactNode {
   return (
     <Layout
       title="Open-Source Autonomous Conversational Commerce & Multi-Agent Studio"
-      description="Official Documentation, Architecture Guides, and Release Notes for AICB.">
+      description="Official Documentation, Architecture Guides, and Release Notes for CommB.">
       <HomepageHeader />
       <main>
         <HomepageFeatures />

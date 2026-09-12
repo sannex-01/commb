@@ -1,23 +1,23 @@
 ---
 sidebar_position: 3
 title: CLI Reference
-description: Complete command-line interface reference for the aicb terminal utility.
+description: Complete command-line interface reference for the commb terminal utility.
 ---
 
-# AICB CLI Reference
+# CommB CLI Reference
 
-When installing AICB via `pip install aicb` or developing locally, the `aicb` executable command is available in your shell.
+When installing CommB via `pip install commb` or developing locally, the `commb` executable command is available in your shell.
 
 ---
 
 ## Commands
 
-### `aicb start`
+### `commb start`
 
-Starts the AICB FastAPI / Uvicorn server.
+Starts the CommB FastAPI / Uvicorn server.
 
 ```bash
-aicb start [OPTIONS]
+commb start [OPTIONS]
 ```
 
 #### Options
@@ -26,7 +26,7 @@ aicb start [OPTIONS]
 |---|---|---|---|
 | `--port` | `-p` | Port number to bind the server | `8422` (or `$PORT`) |
 | `--host` | `-H` | Host IP address to bind | `0.0.0.0` (or `$HOST`) |
-| `--db-url` | — | Custom async Database connection string | `sqlite+aiosqlite:///./aicb.db` |
+| `--db-url` | — | Custom async Database connection string | `sqlite+aiosqlite:///./commb.db` |
 | `--workers` | `-w` | Number of worker processes (production) | `1` |
 | `--reload` | — | Enable hot code reloading for development | `False` |
 
@@ -34,23 +34,23 @@ aicb start [OPTIONS]
 
 ```bash
 # Start on default port 8422 with local SQLite database
-aicb start
+commb start
 
 # Run in development mode with auto-reload
-aicb start --reload
+commb start --reload
 
 # Start on custom port with remote PostgreSQL instance
-aicb start -p 8080 --db-url "postgresql+asyncpg://aicb_user:secret@db.internal:5432/aicb_prod"
+commb start -p 8080 --db-url "postgresql+asyncpg://commb_user:secret@db.internal:5432/commb_prod"
 ```
 
 ---
 
-### `aicb doctor`
+### `commb doctor`
 
 Runs preflight health checks and system diagnostics.
 
 ```bash
-aicb doctor
+commb doctor
 ```
 
 #### What It Checks
@@ -58,16 +58,16 @@ aicb doctor
 2. **LLM Provider API**: Tests active model generation (Gemini, OpenAI, or Claude).
 3. **Omnichannel Credentials**: Validates WhatsApp Cloud API, Telegram Bot token, and Webhook secret keys.
 4. **Payment Gateways**: Checks Paystack and Stripe secret keys.
-5. **AgentOS Remote Telemetry**: Verifies connection with Sannex AgentOS ingestion endpoints.
+5. **AgentOS Remote Telemetry**: Verifies connection with CommB Cloud ingestion endpoints.
 
 ---
 
-### `aicb version`
+### `commb version`
 
-Displays the currently installed AICB platform release version.
+Displays the currently installed CommB platform release version.
 
 ```bash
-aicb version
-# Output: AICB Platform v0.1.0
+commb version
+# Output: CommB Platform v0.1.0
 ```
 

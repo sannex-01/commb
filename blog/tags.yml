@@ -4,7 +4,7 @@ release:
 
 initial:
   label: Initial Release
-  description: Foundation release of AICB.
+  description: Foundation release of CommB.
 
 minor:
   label: Minor Version

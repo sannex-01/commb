@@ -3,16 +3,16 @@ import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
-  title: 'AICB Documentation',
+  title: 'CommB Documentation',
   tagline: 'Autonomous Open-Source AI Conversational Commerce & Multi-Agent Studio',
   favicon: 'img/favicon.ico',
 
 
-  url: 'https://agentos.aicb.sannex.ng',
+  url: 'https://agentos.commb.sannex.ng',
   baseUrl: '/',
 
   organizationName: 'sannex-01',
-  projectName: 'aicb',
+  projectName: 'commb',
 
   onBrokenLinks: 'warn',
 
@@ -36,8 +36,8 @@ const config: Config = {
         },
         blog: {
           routeBasePath: 'releases',
-          blogTitle: 'AICB Platform Releases & Changelogs',
-          blogDescription: 'Official version updates, new features, and security patches for AICB instances.',
+          blogTitle: 'CommB Platform Releases & Changelogs',
+          blogDescription: 'Official version updates, new features, and security patches for CommB instances.',
           showReadingTime: false,
           postsPerPage: 'ALL',
         },
@@ -54,9 +54,9 @@ const config: Config = {
       respectPrefersColorScheme: true,
     },
     navbar: {
-      title: 'AICB Docs',
+      title: 'CommB Docs',
       logo: {
-        alt: 'AICB Logo',
+        alt: 'CommB Logo',
         src: 'img/logo.svg',
       },
       items: [
@@ -68,7 +68,7 @@ const config: Config = {
         },
         {to: '/releases', label: 'Releases & Changelog', position: 'left'},
         {
-          href: 'https://github.com/sannex-01/aicb',
+          href: 'https://github.com/sannex-01/commb',
           label: 'GitHub',
           position: 'right',
         },
@@ -104,19 +104,19 @@ const config: Config = {
           ],
         },
         {
-          title: 'AICB Ecosystem',
+          title: 'CommB Ecosystem',
           items: [
             {
-              label: 'AICB GitHub Repository',
-              href: 'https://github.com/sannex-01/aicb',
+              label: 'CommB GitHub Repository',
+              href: 'https://github.com/sannex-01/commb',
             },
             {
               label: 'Sannex Agent SDK (PyPI)',
-              href: 'https://pypi.org/project/sannex-agent/',
+              href: 'https://pypi.org/project/commb-agent/',
             },
             {
               label: 'Sannex Agent SDK (npm)',
-              href: 'https://www.npmjs.com/package/@sannex/agent',
+              href: 'https://www.npmjs.com/package/@commb/agent',
             },
           ],
         },
@@ -128,13 +128,13 @@ const config: Config = {
               to: '/releases',
             },
             {
-              label: 'Sponsor AICB on GitHub',
-              href: 'https://github.com/sponsors/sannex',
+              label: 'Sponsor CommB on GitHub',
+              href: 'https://github.com/sponsors/sannex-01',
             },
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} Sannex Tech LTD. AICB is free and open source under the MIT License.`,
+      copyright: `Copyright © ${new Date().getFullYear()} Sannex Tech LTD. CommB is free and open source under the MIT License.`,
     },
     prism: {
       theme: prismThemes.github,

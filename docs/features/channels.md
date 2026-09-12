@@ -6,7 +6,7 @@ description: Connect WhatsApp Cloud API, Telegram Bot, and Website Widget.
 
 # Messaging Channels
 
-AICB natively supports omnichannel conversational commerce with unified session tracking.
+CommB natively supports omnichannel conversational commerce with unified session tracking.
 
 ## 1. WhatsApp Cloud API (Meta)
 
@@ -26,7 +26,7 @@ Supported rich formats: **Product Swipeable Carousels**, **Interactive List Mess
 Connect any Telegram Bot created via `@BotFather`:
 
 - **Bot Token**: Provided by `@BotFather` (e.g., `123456789:ABCdef...`).
-- **Auto Webhook Registration**: AICB auto-registers the Telegram Webhook and sets the generated secret token.
+- **Auto Webhook Registration**: CommB auto-registers the Telegram Webhook and sets the generated secret token.
 - **Webhook URL**: `https://your-domain.com/api/v1/webhooks/telegram/{agent_id}`
 
 Supported rich formats: **Media Group Photo Albums** and **Inline Interactive Keyboards**.
@@ -39,7 +39,7 @@ Embed the autonomous assistant on any website or e-commerce store with one scrip
 
 ```html
 <script 
-  src="https://aicb.sannex.ng/widget.js" 
+  src="https://commb.sannex.ng/widget.js" 
   data-bot-id="default" 
   async>
 </script>

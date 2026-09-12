@@ -12,7 +12,7 @@ description: Isolate catalog products and RAG documents per agent persona.
 
 ```
 ┌────────────────────────────────────────────────────────┐
-│                   AICB Workspace                       │
+│                   CommB Workspace                       │
 │                                                        │
 │  ┌──────────────────────┐    ┌──────────────────────┐  │
 │  │   "Sales" Group      │    │  "Support" Group     │  │

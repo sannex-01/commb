@@ -6,7 +6,7 @@ description: Create and configure specialized AI assistant personas.
 
 # Multi-Agent Studio
 
-The **Multi-Agent Studio** allows businesses to deploy multiple AI agents from a single AICB instance. Each agent can represent a distinct role or brand personality (e.g. *Sales Consultant*, *Technical Support*, *VIP Concierge*).
+The **Multi-Agent Studio** allows businesses to deploy multiple AI agents from a single CommB instance. Each agent can represent a distinct role or brand personality (e.g. *Sales Consultant*, *Technical Support*, *VIP Concierge*).
 
 ## Creating an AI Agent
 

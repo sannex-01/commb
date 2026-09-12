@@ -6,14 +6,14 @@ description: Automated cart management, checkout links, and Paystack integration
 
 # Conversational Commerce & Payments
 
-AICB turns chat conversations into instant revenue by managing customer carts, collecting delivery profiles, and generating real-time payment links.
+CommB turns chat conversations into instant revenue by managing customer carts, collecting delivery profiles, and generating real-time payment links.
 
 ## Dynamic Paystack Integration
 
-AICB natively integrates with **Paystack** for multi-currency processing (`NGN`, `USD`, `GHS`, `KES`, `ZAR`):
+CommB natively integrates with **Paystack** for multi-currency processing (`NGN`, `USD`, `GHS`, `KES`, `ZAR`):
 
 1. Configure your **Paystack Secret Key** and **Public Key** in **Settings &rarr; Payment Gateways**.
-2. AICB dynamically queries your Paystack merchant account to verify supported currencies.
+2. CommB dynamically queries your Paystack merchant account to verify supported currencies.
 3. Configure your webhook endpoint: `https://your-domain.com/api/v1/webhooks/paystack`.
 
 ---
@@ -24,7 +24,7 @@ AICB natively integrates with **Paystack** for multi-currency processing (`NGN`,
 [Customer] "I want to buy 2 wireless earbuds"
    │
    ▼
-[AICB Flow Engine]
+[CommB Flow Engine]
    ├─ Checks catalog inventory & pricing
    ├─ Adds item to session cart
    ├─ Turn-by-turn or upfront profile collection (Name, Email, Delivery Address)

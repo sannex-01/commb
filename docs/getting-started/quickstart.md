@@ -1,15 +1,15 @@
 ---
 sidebar_position: 1
 title: Quickstart Guide
-description: Launch your self-hosted AICB assistant using Docker Compose or standalone pip.
+description: Launch your self-hosted CommB assistant using Docker Compose or standalone pip.
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# AICB Quickstart Guide
+# CommB Quickstart Guide
 
-Get a production-ready AICB instance running in under 2 minutes. You can deploy using **Docker Compose** or install directly via **Python (`pip install aicb`)**.
+Get a production-ready CommB instance running in under 2 minutes. You can deploy using **Docker Compose** or install directly via **Python (`pip install commb`)**.
 
 ---
 
@@ -22,8 +22,8 @@ Get a production-ready AICB instance running in under 2 minutes. You can deploy 
 
 ```bash
 # Clone the open-source repository
-git clone https://github.com/sannex-01/aicb.git
-cd aicb
+git clone https://github.com/sannex-01/commb.git
+cd commb
 
 # Copy environment variables template
 cp .env.example .env
@@ -38,7 +38,7 @@ LLM_PROVIDER=gemini
 GEMINI_API_KEY=AIzaSy...
 
 # Optional Database (Defaults to SQLite if omitted)
-DATABASE_URL=postgresql+asyncpg://postgres:postgres@db:5432/aicb
+DATABASE_URL=postgresql+asyncpg://postgres:postgres@db:5432/commb
 ```
 
 ### 2. Start Services
@@ -53,17 +53,17 @@ Verify that the containers are healthy:
 docker compose ps
 ```
 
-Your AICB assistant is now running at `http://localhost:8422`!
+Your CommB assistant is now running at `http://localhost:8422`!
 
 </TabItem>
 <TabItem value="pip" label="🐍 Python Package (pip)">
 
-### 1. Install AICB via pip
+### 1. Install CommB via pip
 
-AICB can be installed standalone without Docker on any machine running Python 3.10+:
+CommB can be installed standalone without Docker on any machine running Python 3.10+:
 
 ```bash
-pip install aicb
+pip install commb
 ```
 
 ### 2. Run Preflight Diagnostics
@@ -71,17 +71,17 @@ pip install aicb
 Validate your environment and database connection:
 
 ```bash
-aicb doctor
+commb doctor
 ```
 
 ### 3. Start the Server
 
 ```bash
 # Start with default SQLite database on port 8422
-aicb start
+commb start
 
 # Or supply a custom PostgreSQL / MySQL database URL
-aicb start --db-url "postgresql+asyncpg://user:password@localhost:5432/aicb" --port 8422
+commb start --db-url "postgresql+asyncpg://user:password@localhost:5432/commb" --port 8422
 ```
 
 </TabItem>
@@ -103,7 +103,7 @@ graph LR
 
 1. **Create Administrator Account**: Enter your Name, Email, and Master Password.
 2. **Business Identity**: Enter your Business Name and Currency (e.g. `NGN`, `USD`, `GHS`, `KES`, `EUR`).
-3. **Master API Key**: The wizard securely generates your platform's live API key (`aicb_live_...`).
+3. **Master API Key**: The wizard securely generates your platform's live API key (`commb_live_...`).
 4. **Permanent Idempotency Lockout**: Once configured, the `/setup` route is permanently locked to protect against unauthorized resets.
 
 ---

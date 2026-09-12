@@ -12,9 +12,9 @@ The **Sannex Agent SDK** provides dual-package parity for integrating custom age
 
 Both SDKs expose the exact same public API surface, parameter schemas, and fire-and-forget telemetry batching behavior.
 
-| Feature | Python (`sannex-agent`) | JavaScript / TypeScript (`@sannex/agent`) |
+| Feature | Python (`commb-agent`) | JavaScript / TypeScript (`@commb/agent`) |
 |---|---|---|
-| **Package Manager** | `pip install sannex-agent` | `npm install @sannex/agent` |
+| **Package Manager** | `pip install commb-agent` | `npm install @commb/agent` |
 | **Sync Client** | `SannexClient` | `SannexClient` |
 | **Async Client** | `AsyncSannexClient` | Native Promise-based client |
 | **Telemetry Tracking** | `client.track(...)` | `client.track(...)` |
@@ -30,8 +30,8 @@ Both SDKs expose the exact same public API surface, parameter schemas, and fire-
 from sannex_agent import SannexClient
 
 client = SannexClient(
-    api_key="aicb_live_...",
-    base_url="https://agentos.aicb.sannex.ng"
+    api_key="commb_live_...",
+    base_url="https://agentos.commb.sannex.ng"
 )
 
 # Track an event (Fire-and-forget background queue)
@@ -49,11 +49,11 @@ client.track(
 ## TypeScript / Node.js Quickstart
 
 ```typescript
-import { SannexClient } from '@sannex/agent';
+import { SannexClient } from '@commb/agent';
 
 const client = new SannexClient({
-  apiKey: 'aicb_live_...',
-  baseUrl: 'https://agentos.aicb.sannex.ng',
+  apiKey: 'commb_live_...',
+  baseUrl: 'https://agentos.commb.sannex.ng',
 });
 
 // Track an event

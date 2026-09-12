@@ -18,5 +18,5 @@ Under **Admin Portal &rarr; Knowledge Base**, you can upload:
 ## Hybrid Vector Search & Injection
 
 1. **Chunking & Embeddings**: Uploaded documents are split into semantic chunks and embedded with vector representations.
-2. **Dynamic Top-K Retrieval**: When a customer asks a question, AICB queries the vector store, filters by the agent's authorized access tags, and retrieves the most relevant knowledge chunks.
+2. **Dynamic Top-K Retrieval**: When a customer asks a question, CommB queries the vector store, filters by the agent's authorized access tags, and retrieves the most relevant knowledge chunks.
 3. **Context Grounding**: Retrieved context is injected directly into the LLM system prompt for accurate and grounded replies.
