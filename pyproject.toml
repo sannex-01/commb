@@ -80,6 +80,14 @@ Issues = "https://github.com/sannex-01/commb/issues"
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["app*", "widget*"]
+# Without this, `widget*` also matches widget.node_modules.* and the entire
+# JS build toolchain (typescript, vite, rollup, ...) gets published inside the
+# wheel. Only the built bundle in widget/dist is meant to ship.
+exclude = ["widget.node_modules*", "widget.src*", "tests*"]
 
 [tool.setuptools.package-data]
-"*" = ["*.html", "*.css", "*.js", "*.png", "*.svg", "*.ico", "*.json"]
+"*" = ["*.html", "*.css", "*.png", "*.svg", "*.ico"]
+# JS/JSON are listed per-package rather than globally, so a stray dependency
+# tree can never sweep its own files into the distribution.
+"app" = ["**/*.js", "**/*.json"]
+"widget" = ["dist/widget.js"]
