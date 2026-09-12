@@ -31,7 +31,7 @@ from sannex_agent import SannexClient
 
 client = SannexClient(
     api_key="commb_live_...",
-    base_url="https://agentos.commb.sannex.ng"
+    base_url="https://commb.app"
 )
 
 # Track an event (Fire-and-forget background queue)
@@ -53,7 +53,7 @@ import { SannexClient } from '@commb/agent';
 
 const client = new SannexClient({
   apiKey: 'commb_live_...',
-  baseUrl: 'https://agentos.commb.sannex.ng',
+  baseUrl: 'https://commb.app',
 });
 
 // Track an event

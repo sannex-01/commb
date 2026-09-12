@@ -39,7 +39,7 @@ Embed the autonomous assistant on any website or e-commerce store with one scrip
 
 ```html
 <script 
-  src="https://commb.sannex.ng/widget.js" 
+  src="https://bot.example.com/widget.js" 
   data-bot-id="default" 
   async>
 </script>

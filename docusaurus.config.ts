@@ -8,7 +8,7 @@ const config: Config = {
   favicon: 'img/favicon.ico',
 
 
-  url: 'https://agentos.commb.sannex.ng',
+  url: 'https://docs.commb.app',
   baseUrl: '/',
 
   organizationName: 'sannex-01',
