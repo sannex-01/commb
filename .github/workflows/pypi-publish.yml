@@ -10,8 +10,19 @@ jobs:
   pypi-publish:
     name: Build & Upload to PyPI
     runs-on: ubuntu-latest
+    # Bind to a GitHub environment so the PyPI trusted publisher can be scoped
+    # to it, and so releases can require a manual approval if you add one.
+    environment:
+      name: pypi
+      url: https://pypi.org/p/commb
     permissions:
-      id-token: write # Mandatory for PyPI Trusted Publishing
+      # Mandatory for PyPI Trusted Publishing (OIDC). No API token is stored
+      # anywhere: PyPI is configured to trust this repo + workflow directly.
+      # Configure at https://pypi.org/manage/project/commb/settings/publishing/
+      #   Owner: sannex-01 | Repo: commb
+      #   Workflow: pypi-publish.yml | Environment: pypi
+      id-token: write
+      contents: read
 
     steps:
       - name: Checkout repository
@@ -43,8 +54,13 @@ jobs:
         run: |
           python -m build
 
+      - name: Verify distribution metadata
+        run: |
+          python -m twine check dist/*
+
+      # No `password:` — authentication happens over OIDC via the trusted
+      # publisher configured on PyPI for this repo/workflow/environment.
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          password: ${{ secrets.PYPI_API_TOKEN }}
           skip-existing: true

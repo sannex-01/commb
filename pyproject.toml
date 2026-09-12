@@ -74,8 +74,8 @@ commb = "app.cli:main"
 [project.urls]
 Homepage = "https://commb.app"
 Documentation = "https://docs.commb.app"
-Repository = "https://github.com/samakins/commb"
-Issues = "https://github.com/samakins/commb/issues"
+Repository = "https://github.com/sannex-01/commb"
+Issues = "https://github.com/sannex-01/commb/issues"
 
 [tool.setuptools.packages.find]
 where = ["."]

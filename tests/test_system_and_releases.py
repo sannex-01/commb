@@ -56,12 +56,20 @@ async def test_system_releases_endpoint_fallback(async_session: AsyncSession):
 @pytest.mark.asyncio
 async def test_perform_remote_sync_ingests_release_notes(async_session: AsyncSession):
     from unittest.mock import AsyncMock
-    from sannex_agent.client import ReleaseNote as SannexReleaseNote, SannexConfigResponse
 
-    mock_release = SannexReleaseNote(
+    # The telemetry SDK is an OPTIONAL extra (`pip install commb[telemetry]`),
+    # so this test only applies when it is actually installed.
+    commb_agent_client = pytest.importorskip(
+        "commb_agent.client",
+        reason="optional telemetry extra not installed",
+    )
+    SdkReleaseNote = commb_agent_client.ReleaseNote
+    SdkConfigResponse = commb_agent_client.CommBConfigResponse
+
+    mock_release = SdkReleaseNote(
         version="0.1.0",
-        title="AgentOS Dynamic Release Sync",
-        description="Release notes synced from AgentOS to CommB instance.",
+        title="Dynamic Release Sync",
+        description="Release notes synced from the collector to this CommB instance.",
         changelog=["Sync release notes", "Read-only config"],
         release_date="2026-09-05",
         is_critical=False,
@@ -71,7 +79,7 @@ async def test_perform_remote_sync_ingests_release_notes(async_session: AsyncSes
         mock_instance = MagicMock()
         mock_instance.__aenter__ = AsyncMock(return_value=mock_instance)
         mock_instance.__aexit__ = AsyncMock(return_value=None)
-        mock_instance.get_config = AsyncMock(return_value=SannexConfigResponse(status="success", releases=[mock_release]))
+        mock_instance.get_config = AsyncMock(return_value=SdkConfigResponse(status="success", releases=[mock_release]))
         mock_instance.get_releases = AsyncMock(return_value=[mock_release])
         mock_client_cls.return_value = mock_instance
         with patch("app.telemetry.sync_worker.settings.COMMB_TELEMETRY_KEY", "dummy_key"):
@@ -83,6 +91,19 @@ async def test_perform_remote_sync_ingests_release_notes(async_session: AsyncSes
             # Check DB
             rel = await async_session.scalar(select(ReleaseNote).where(ReleaseNote.version == "0.1.0"))
             assert rel is not None
-            assert rel.title == "AgentOS Dynamic Release Sync"
+            assert rel.title == "Dynamic Release Sync"
             assert "Read-only config" in rel.changelog_json
+
+
+@pytest.mark.asyncio
+async def test_perform_remote_sync_without_telemetry_sdk(async_session: AsyncSession):
+    """With no telemetry SDK available, remote sync must degrade gracefully to
+    local catalog sync rather than raising — the default self-hosted path."""
+    with patch("app.telemetry.sync_worker.AsyncCommBClient", None), \
+         patch("app.telemetry.sync_worker.settings.COMMB_TELEMETRY_KEY", "dummy_key"):
+        summary = await perform_remote_sync(async_session)
+
+    assert summary["status"] == "success"
+    assert summary["collector_connected"] is False
+    assert summary["releases_synced"] == 0
 

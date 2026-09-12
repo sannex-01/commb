@@ -188,7 +188,7 @@ async def get_health_summary(db: AsyncSession = Depends(get_db)):
             "currency": biz.currency if (biz and biz.currency) else "NGN",
         },
         "docs_url": "https://commb.app/docs",
-        "github_url": "https://github.com/samakins/commb",
+        "github_url": "https://github.com/sannex-01/commb",
     }
 
 

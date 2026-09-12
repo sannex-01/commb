@@ -28,7 +28,7 @@ scheduler = AsyncIOScheduler()
 
 _cached_support_config: Dict[str, Any] = {
     "enabled": True,
-    "url": "https://github.com/sponsors/samakins",
+    "url": "https://github.com/sponsors/sannex-01",
     "title": "Support Open-Source CommB",
     "message": "Enjoying CommB? Consider supporting future open-source development and maintenance.",
 }
