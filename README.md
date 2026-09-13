@@ -1,22 +1,15 @@
-# Website
+# CommB Docs
 
-This website is built using [Docusaurus](https://docusaurus.io/), a modern static website generator.
+The source for [docs.commb.app](https://docs.commb.app), built with [Docusaurus](https://docusaurus.io/).
 
-## Installation
+## Local development
 
 ```bash
 npm install
-```
-
-**Note**: feel free to use the package manager of your choice.
-
-## Local Development
-
-```bash
 npm run start
 ```
 
-This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
+Starts a local server with live reload.
 
 ## Build
 
@@ -24,20 +17,31 @@ This command starts a local development server and opens up a browser window. Mo
 npm run build
 ```
 
-This command generates static content into the `build` directory and can be served using any static contents hosting service.
+Generates static output into `build/`.
 
-## Deployment
+## How the hosted docs are deployed
 
-Using SSH:
+`docs.commb.app` is served by **Cloudflare Pages**, connected directly to this
+repository. Every push to `main` that touches `docs-site/` triggers a Pages
+build automatically — nothing to run by hand, no server involved.
+
+Pages settings (for reference, not something you configure here):
+
+- Root directory: `docs-site`
+- Build command: `npm run build`
+- Build output directory: `build`
+
+## Self-hosting these docs
+
+If you've forked CommB and want to run your own copy of the docs (for example
+alongside a self-hosted CommB instance), the `Dockerfile` and `nginx.conf` in
+this directory build and serve them as a standalone container:
 
 ```bash
-USE_SSH=true npm run deploy
+docker build -t commb-docs .
+docker run -p 8080:80 commb-docs
 ```
 
-Not using SSH:
-
-```bash
-GIT_USER=<Your GitHub username> npm run deploy
-```
-
-If you are using GitHub Pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
+That path is **not** what powers docs.commb.app — it's kept here only as a
+self-hosting option, since CommB is open source and a fork won't have access
+to this project's Cloudflare Pages setup.

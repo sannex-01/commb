@@ -1,3 +1,7 @@
+# Self-hosting option only -- docs.commb.app is served by Cloudflare Pages, not
+# this Dockerfile. Kept here so a fork of CommB can still run its own copy of
+# the docs; see README.md for details.
+#
 # ===================================================
 # Stage 1: Build the Docusaurus static site
 # ===================================================
