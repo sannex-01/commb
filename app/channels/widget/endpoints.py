@@ -206,7 +206,19 @@ async def widget_chat_stream(request: Request, req: WidgetChatRequest, db: Async
                 elif isinstance(chunk, dict) and chunk.get("type") == "final":
                     yield f"data: {json.dumps({'final': chunk['data'].model_dump()})}\n\n"
         except Exception as e:
-            logger.warning(f"AI Orchestrator unavailable for widget ({e}). Falling back to interactive menu buttons.")
+            # Falling back to menu buttons is a supported way to run a bot, not a
+            # failure: `interactive_flow` is a first-class mode and a store can
+            # sell entirely through browse/cart/checkout with no LLM configured.
+            # So a missing key is logged at INFO -- it is a configuration choice --
+            # while anything else stays a warning, because that IS an outage.
+            if "is not configured" in str(e):
+                logger.info(
+                    "No LLM key configured; serving interactive menu flow. "
+                    "Add a key per agent (Admin > Agents) or per access group to "
+                    "enable conversational replies."
+                )
+            else:
+                logger.warning(f"AI Orchestrator unavailable for widget ({e}). Falling back to interactive menu buttons.")
             fallback_text = "👋 I received your message! Please select from the menu below to browse products, check your cart, or track an order:"
             fallback_resp = BotResponse(text=fallback_text, buttons=[
                 {"id": b["id"], "title": b["title"], "kind": "action", "url": None}
