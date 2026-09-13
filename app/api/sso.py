@@ -1,5 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Response
-from pydantic import BaseModel
+from fastapi import APIRouter, Depends, HTTPException, status, Response, Request
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 import hmac
@@ -14,20 +13,44 @@ from app.models.user import AdminUser
 
 router = APIRouter(prefix="/auth", tags=["SSO"])
 
-class SSORequest(BaseModel):
-    token: str
+
+async def _extract_token(request: Request) -> str:
+    """Reads `token` from either a JSON body or a form POST.
+
+    The cloud control plane hands this off by submitting a real HTML <form>
+    (method="POST", target="_blank") rather than calling fetch(), because only
+    a genuine browser navigation lets the instance's Set-Cookie response land
+    on the instance's own origin -- a fetch()/XHR response cannot set a cookie
+    the browser will actually use for subsequent page loads on that origin. A
+    submitted form always sends application/x-www-form-urlencoded, never JSON,
+    so this endpoint has to accept both.
+    """
+    content_type = request.headers.get("content-type", "")
+    if "application/json" in content_type:
+        body = await request.json()
+        token = body.get("token") if isinstance(body, dict) else None
+    else:
+        form = await request.form()
+        token = form.get("token")
+
+    if not token or not isinstance(token, str):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Missing token")
+    return token
+
 
 @router.post("/sso")
-async def sso_login(req: SSORequest, response: Response, db: AsyncSession = Depends(get_db)):
-    """Verifies a short-lived AgentOS SSO token and logs in the operator."""
+async def sso_login(request: Request, response: Response, db: AsyncSession = Depends(get_db)):
+    """Verifies a short-lived CommB Cloud SSO token and logs in the operator."""
     if not settings.COMMB_API_KEY:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="COMMB_API_KEY not configured. SSO disabled."
         )
 
+    token = await _extract_token(request)
+
     # Decode and verify the SSO token (JWT structure: header.payload.signature)
-    parts = req.token.split(".")
+    parts = token.split(".")
     if len(parts) != 3:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid token format")
     
@@ -59,9 +82,13 @@ async def sso_login(req: SSORequest, response: Response, db: AsyncSession = Depe
     
     if not user:
         user = AdminUser(
-            name=payload.get("name", "AgentOS Operator"),
+            name=payload.get("name", "CommB Cloud Operator"),
             email=email,
-            password_hash=hash_password("AgentOS_SSO_Placeholder_Pass"),
+            # Nobody signs in with this password: SSO is the only entry point
+            # for an auto-provisioned account. A fixed placeholder is fine
+            # precisely because it grants nothing on its own -- login still
+            # requires a valid, freshly-signed SSO token.
+            password_hash=hash_password("CommB_SSO_Placeholder_Pass"),
             role="admin",  # Defaulting to admin
             is_active=True
         )
