@@ -5,6 +5,7 @@ from pydantic import BaseModel
 from sqlalchemy import select, or_, func, desc
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core import entitlements
 from app.core.database import get_db
 from app.core.security import get_current_admin_user, require_admin_role
 from app.models.knowledge import KnowledgeDoc
@@ -101,6 +102,11 @@ async def create_knowledge_doc(
     _: AdminUser = Depends(require_admin_role),
 ):
     """Creates a new knowledge document scoped to access groups (and/or tags)."""
+    # No-op unless CommB Cloud provisioned this instance on a plan; a
+    # self-hosted install has no document limit. See app/core/entitlements.py.
+    existing = (await db.execute(select(func.count(KnowledgeDoc.id)))).scalar() or 0
+    entitlements.require_knowledge_capacity(existing)
+
     group_ids_json, tags_json = _access_json_from(req.access_group_ids, req.access_tags)
 
     doc = KnowledgeDoc(

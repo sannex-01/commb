@@ -4,10 +4,11 @@ import secrets
 from typing import Optional, List
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
+from app.core import entitlements
 from app.core.database import get_db
 from app.core.security import get_current_admin_user, require_admin_role, require_operator_or_above
 from app.models.user import AdminUser
@@ -147,8 +148,13 @@ async def create_agent(
     current_user: AdminUser = Depends(require_admin_role),
     db: AsyncSession = Depends(get_db),
 ):
+    # No-ops unless CommB Cloud provisioned this instance on a plan; a
+    # self-hosted install is unlimited. See app/core/entitlements.py.
+    existing_count = (await db.execute(select(func.count(Agent.id)))).scalar() or 0
+    entitlements.require_agent_capacity(existing_count)
+
     slug = _slugify(req.slug) if req.slug and req.slug.strip() else _slugify(req.name)
-    
+
     # Ensure slug uniqueness
     res = await db.execute(select(Agent).where(Agent.slug == slug))
     if res.scalar_one_or_none():
@@ -158,6 +164,13 @@ async def create_agent(
     wa_phone = (req.whatsapp_phone_number_id or req.whatsapp_phone_id or "").strip() or None
     wa_token = (req.whatsapp_access_token or req.whatsapp_token or "").strip() or None
     tg_token = (req.telegram_bot_token or "").strip() or None
+
+    # Configuring a channel's credentials is what actually enables it, so that
+    # is where the plan check belongs.
+    if wa_phone or wa_token:
+        entitlements.require_channel("whatsapp")
+    if tg_token:
+        entitlements.require_channel("telegram")
 
     api_key_val = (req.api_key or req.api_key_override or "").strip() or None
 
@@ -265,6 +278,15 @@ async def update_agent(
     agent = res.scalar_one_or_none()
     if not agent:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Agent not found.")
+
+    # Checked here too, not only on create: otherwise an off-plan channel could
+    # be enabled by creating a bare agent and adding its credentials afterwards.
+    # No-op on a self-hosted install.
+    if (req.whatsapp_phone_number_id or req.whatsapp_phone_id or
+            req.whatsapp_access_token or req.whatsapp_token):
+        entitlements.require_channel("whatsapp")
+    if req.telegram_bot_token:
+        entitlements.require_channel("telegram")
 
     if req.name is not None:
         agent.name = req.name.strip()

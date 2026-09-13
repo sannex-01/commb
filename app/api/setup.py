@@ -6,6 +6,7 @@ from pydantic import BaseModel
 from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core import entitlements
 from app.core.database import get_db
 from app.core.config import settings
 from app.core.security import hash_password, create_admin_jwt, generate_platform_api_key
@@ -42,6 +43,9 @@ async def get_setup_status(db: AsyncSession = Depends(get_db)):
     return {
         "initialized": user_count > 0,
         "business_configured": bool(biz and biz.is_configured),
+        # Reports "managed": false with no limits on a self-hosted install, so
+        # the admin UI can hide plan/upgrade wording entirely for those users.
+        "plan": entitlements.plan_summary(),
         "app_name": biz.name if biz else settings.APP_NAME,
         "business_name": biz.name if biz else "CommB Studio",
         "logo_url": biz.logo_url if biz else None,

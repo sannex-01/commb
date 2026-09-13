@@ -130,6 +130,22 @@ class Settings(BaseSettings):
 
     COMMB_API_KEY: Optional[str] = None
 
+    # --- Plan entitlements ----------------------------------------------------
+    # Set by CommB Cloud at provision time to reflect the plan the customer pays
+    # for. The DEFAULTS ARE DELIBERATELY UNLIMITED: a self-hosted CommB is not
+    # on a plan and must never be crippled by limits meant for a hosted tier.
+    # Only a managed instance has these set.
+    #
+    # PLAN_NAME is display-only; the values below are what is enforced.
+    PLAN_NAME: Optional[str] = None
+    # Comma-separated: widget, telegram, whatsapp. Empty means every channel.
+    PLAN_CHANNELS: Optional[str] = None
+    # 0 or unset means unlimited.
+    PLAN_MAX_PRODUCTS: int = 0
+    PLAN_MAX_AGENTS: int = 0
+    PLAN_MAX_KNOWLEDGE_DOCS: int = 0
+    PLAN_ALLOW_CUSTOM_DOMAIN: bool = True
+
     # --- Public update check (no key, no account, no personal data) -----------
     # Fetches release notes and the sponsor banner from a public endpoint over a
     # plain unauthenticated GET. Sends nothing but the running version, so every

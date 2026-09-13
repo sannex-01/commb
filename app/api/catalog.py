@@ -9,6 +9,7 @@ from sqlalchemy import select, or_, func, desc
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
+from app.core import entitlements
 from app.core.database import get_db
 from app.core.security import get_current_admin_user, require_admin_role
 from app.models.catalog import CatalogItem
@@ -349,6 +350,11 @@ async def create_catalog_item(
     _: AdminUser = Depends(require_admin_role),
 ):
     """Creates a new catalog product with access group assignments."""
+    # No-op unless CommB Cloud provisioned this instance on a plan; a
+    # self-hosted install has no product limit. See app/core/entitlements.py.
+    existing = (await db.execute(select(func.count(CatalogItem.id)))).scalar() or 0
+    entitlements.require_product_capacity(existing)
+
     item = await _build_catalog_item_from_request(db, req)
     await db.commit()
     await db.refresh(item)
