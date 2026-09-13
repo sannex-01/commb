@@ -57,7 +57,7 @@ const config: Config = {
       title: 'CommB Docs',
       logo: {
         alt: 'CommB Logo',
-        src: 'img/logo.svg',
+        src: 'img/logo.png',
       },
       items: [
         {

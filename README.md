@@ -1,3 +1,10 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/logo-dark.png">
+    <img src="assets/logo-light.png" alt="CommB" width="120">
+  </picture>
+</p>
+
 # CommB — Commercial Bots
 
 Open-source AI commerce bots for WhatsApp Cloud API, Telegram, and an embeddable website widget, with conversational commerce powered by Paystack and Bumpa.
