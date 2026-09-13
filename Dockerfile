@@ -16,9 +16,12 @@ RUN npm ci --prefer-offline --no-audit --no-fund
 
 COPY . ./
 
-# Docusaurus' webpack build is memory-hungry and the default heap is what makes
-# it fail on a small server, usually with an unhelpful exit code.
-ENV NODE_OPTIONS=--max-old-space-size=2048
+# Docusaurus' webpack build is memory-hungry, but asking for too LARGE a heap is
+# its own problem on a small server: with two concurrent builds on 8GB, two
+# 2048MB heaps plus the rest is enough to get a build OOM-killed mid-`npm ci`
+# with no error text. 1024MB is comfortably above what this site actually needs
+# (verified by a local build) and leaves room for a neighbour.
+ENV NODE_OPTIONS=--max-old-space-size=1024
 RUN npm run build
 
 # ===================================================
