@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Response, Request
+from fastapi import APIRouter, Depends, HTTPException, status, Request
+from fastapi.responses import RedirectResponse
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 import hmac
@@ -39,7 +40,7 @@ async def _extract_token(request: Request) -> str:
 
 
 @router.post("/sso")
-async def sso_login(request: Request, response: Response, db: AsyncSession = Depends(get_db)):
+async def sso_login(request: Request, db: AsyncSession = Depends(get_db)):
     """Verifies a short-lived CommB Cloud SSO token and logs in the operator."""
     if not settings.COMMB_API_KEY:
         raise HTTPException(
@@ -103,22 +104,22 @@ async def sso_login(request: Request, response: Response, db: AsyncSession = Dep
     
     # Issue standard admin session JWT
     session_token = create_admin_jwt(user.id, user.email, user.role)
-    response.set_cookie(
+
+    # This endpoint is reached by a real browser navigation (a form POST from
+    # the cloud control plane), not by fetch() -- so the operator ends up
+    # LOOKING at whatever is returned. Redirect them into the admin rather
+    # than rendering a JSON blob at them.
+    #
+    # The session lives in the httpOnly cookie set below, and deliberately is
+    # NOT echoed in a body: this response is rendered in a browser tab and
+    # kept in history, so returning the JWT as text would undo the point of
+    # httpOnly for no gain -- the cookie is what authenticates the browser.
+    redirect = RedirectResponse(url="/_/admin", status_code=status.HTTP_303_SEE_OTHER)
+    redirect.set_cookie(
         key="commb_admin_session",
         value=session_token,
         httponly=True,
         samesite="lax",
         max_age=172800,
     )
-    
-    return {
-        "status": "ok",
-        "access_token": session_token,
-        "token": session_token,
-        "user": {
-            "id": user.id,
-            "email": user.email,
-            "name": user.name,
-            "role": user.role,
-        }
-    }
+    return redirect

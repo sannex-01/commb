@@ -71,10 +71,10 @@ async def test_sso_via_form_post_matches_the_browser_form_submission(client):
         data={"token": token},  # httpx sends dict `data=` as form-encoded
     )
 
-    assert res.status_code == 200, res.text
-    body = res.json()
-    assert body["status"] == "ok"
-    assert body["user"]["email"] == "owner@example.com"
+    # 303 to the admin, not a JSON blob: this is a real browser navigation, so
+    # whatever comes back is what the operator ends up looking at.
+    assert res.status_code == 303, res.text
+    assert res.headers["location"] == "/_/admin"
     assert "commb_admin_session" in res.cookies
 
 
@@ -85,8 +85,8 @@ async def test_sso_via_json_body_still_works(client):
 
     res = await client.post("/api/v1/auth/sso", json={"token": token})
 
-    assert res.status_code == 200, res.text
-    assert res.json()["user"]["email"] == "owner@example.com"
+    assert res.status_code == 303, res.text
+    assert "commb_admin_session" in res.cookies
 
 
 @pytest.mark.asyncio
@@ -119,12 +119,38 @@ async def test_sso_missing_token_is_a_clean_400_not_a_500(client):
 
 
 @pytest.mark.asyncio
-async def test_sso_auto_provisions_an_admin_on_first_login(client):
+async def test_sso_auto_provisions_an_admin_on_first_login(client, db_session):
     token = _make_sso_token("new-operator@example.com", name="New Operator")
 
     res = await client.post("/api/v1/auth/sso", data={"token": token})
 
-    assert res.status_code == 200
-    user = res.json()["user"]
-    assert user["email"] == "new-operator@example.com"
-    assert user["role"] == "admin"
+    assert res.status_code == 303
+    assert "commb_admin_session" in res.cookies
+
+    # The response redirects rather than naming the user, so assert the
+    # provisioning actually happened by reading the row back.
+    from sqlalchemy import select
+    from app.models.user import AdminUser
+
+    found = (
+        await db_session.execute(
+            select(AdminUser).where(AdminUser.email == "new-operator@example.com")
+        )
+    ).scalar_one_or_none()
+
+    assert found is not None
+    assert found.role == "admin"
+
+
+@pytest.mark.asyncio
+async def test_sso_does_not_echo_the_session_token_in_the_response_body(client):
+    """The session is the httpOnly cookie. Returning it as text too would put a
+    48h admin JWT in a rendered browser tab and in history, undoing httpOnly
+    for no gain."""
+    token = _make_sso_token("owner@example.com")
+
+    res = await client.post("/api/v1/auth/sso", data={"token": token})
+
+    assert res.status_code == 303
+    assert "access_token" not in res.text
+    assert res.cookies["commb_admin_session"] not in res.text
