@@ -8,7 +8,7 @@ on:
 
 jobs:
   docker:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -56,5 +56,15 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          # A local cache dir, not type=gha: the Actions cache service is not
+          # available to a self-hosted runner, so type=gha would silently
+          # cache nothing and every build would start from scratch.
+          cache-from: type=local,src=/tmp/.buildx-cache-commb
+          cache-to: type=local,dest=/tmp/.buildx-cache-commb-new,mode=max
+
+      # Without this the cache directory grows without bound, since BuildKit
+      # only ever appends to it.
+      - name: Rotate the build cache
+        run: |
+          rm -rf /tmp/.buildx-cache-commb
+          mv /tmp/.buildx-cache-commb-new /tmp/.buildx-cache-commb

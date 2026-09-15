@@ -9,7 +9,7 @@ on:
 jobs:
   pypi-publish:
     name: Build & Upload to PyPI
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     # Bind to a GitHub environment so the PyPI trusted publisher can be scoped
     # to it, and so releases can require a manual approval if you add one.
     environment:

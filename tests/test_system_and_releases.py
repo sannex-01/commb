@@ -33,7 +33,7 @@ async def test_system_version_endpoint(async_session: AsyncSession):
         res = await ac.get("/api/v1/system/version")
         assert res.status_code == 200
         data = res.json()
-        assert data["version"] == "0.2.0"
+        assert data["version"] == settings.APP_VERSION
         assert data["name"] == "CommB Assistant"
         assert "support" in data
         assert data["support"]["enabled"] is True
@@ -49,7 +49,7 @@ async def test_system_releases_endpoint_fallback(async_session: AsyncSession):
         assert res.status_code == 200
         releases = res.json()
         assert len(releases) >= 1
-        assert releases[0]["version"] == "0.2.0"
+        assert releases[0]["version"] == settings.APP_VERSION
     app.dependency_overrides.clear()
 
 

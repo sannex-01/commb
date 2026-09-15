@@ -12,7 +12,7 @@ class Settings(BaseSettings):
 
     # Application
     APP_NAME: str = "CommB Assistant"
-    APP_VERSION: str = "0.2.0"
+    APP_VERSION: str = "0.2.2"
     APP_SECRET: Optional[str] = None
     ENVIRONMENT: Literal["development", "production"] = "development"
     DEBUG: bool = True
