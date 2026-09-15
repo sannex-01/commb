@@ -70,12 +70,18 @@ jobs:
           # A local cache dir, not type=gha: the Actions cache service is not
           # available to a self-hosted runner, so type=gha would silently
           # cache nothing and every build would start from scratch.
-          cache-from: type=local,src=/tmp/.buildx-cache-commb
-          cache-to: type=local,dest=/tmp/.buildx-cache-commb-new,mode=max
+          #
+          # RUNNER_TEMP rather than a hardcoded /tmp, because the runner may be
+          # on Windows, where /tmp is not a real path.
+          cache-from: type=local,src=${{ runner.temp }}/.buildx-cache-commb
+          cache-to: type=local,dest=${{ runner.temp }}/.buildx-cache-commb-new,mode=max
 
       # Without this the cache directory grows without bound, since BuildKit
-      # only ever appends to it.
+      # only ever appends to it. `shell: bash` so this works the same on a
+      # Windows runner, where `run:` would otherwise be PowerShell and these
+      # commands would not exist.
       - name: Rotate the build cache
+        shell: bash
         run: |
-          rm -rf /tmp/.buildx-cache-commb
-          mv /tmp/.buildx-cache-commb-new /tmp/.buildx-cache-commb
+          rm -rf "${{ runner.temp }}/.buildx-cache-commb"
+          mv "${{ runner.temp }}/.buildx-cache-commb-new" "${{ runner.temp }}/.buildx-cache-commb"
