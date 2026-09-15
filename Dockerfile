@@ -57,16 +57,21 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # The compiled dependencies, without the toolchain that produced them.
 COPY --from=python-builder /opt/venv /opt/venv
 
-COPY . .
-COPY --from=widget-builder /widget/dist ./widget/dist
+# The user is created before the COPYs so they can set ownership inline with
+# --chown. A `chown -R /app` afterwards would rewrite every file's metadata,
+# which Docker stores as a SECOND full copy of the app layer -- doubling the
+# image for nothing.
+RUN useradd --system --create-home --uid 1001 commb
+
+COPY --chown=commb:commb . .
+COPY --from=widget-builder --chown=commb:commb /widget/dist ./widget/dist
 
 # --no-deps: requirements.txt already installed everything, and without this pip
 # re-resolves the whole tree against the index on every build.
 RUN pip install --no-cache-dir --no-deps -e .
 
-# Run unprivileged: a compromise in the app should not be root in the container.
-RUN useradd --system --create-home --uid 1001 commb \
-    && chown -R commb:commb /app
+# Run unprivileged: a compromise in the app should not be root in the
+# container. The user was created above so the COPYs could use --chown.
 USER commb
 
 EXPOSE 8422

@@ -32,6 +32,12 @@ docs
 *.md
 !README.md
 
+# The documentation site is deployed separately (Cloudflare Pages) and nothing
+# in the image references it. Its node_modules alone is ~487MB, which was
+# landing in `COPY . .` and then AGAIN in the chown layer -- together that was
+# most of the image, and every instance pulled it on every deploy.
+docs-site
+
 # Secrets are injected as environment variables, never baked into a layer.
 .env
 .env.*
