@@ -1,3 +1,14 @@
+# SECURITY: this repo is PUBLIC and this workflow runs on a SELF-HOSTED
+# runner, i.e. on hardware we own, as our own user.
+#
+# That combination is only safe because the triggers below are `push` and
+# `workflow_dispatch` -- both of which require write access to THIS repo. A
+# fork cannot fire them.
+#
+# Do NOT add `pull_request` here. On a public repo that would let anyone run
+# arbitrary code on the runner by opening a PR, with our filesystem, Docker
+# daemon and any local .env in reach. If PR-triggered CI is ever needed, run
+# it on a GitHub-hosted runner (`runs-on: ubuntu-latest`) instead.
 name: Publish Python Package to PyPI
 
 on:
