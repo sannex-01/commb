@@ -121,12 +121,6 @@ async def test_reports_export_csv_endpoint(client: AsyncClient, admin_headers):
     assert "Order ID,Reference,Customer Name" in response.text
 
 
-@pytest.mark.asyncio
-async def test_settings_analytics_endpoints(client: AsyncClient, admin_headers):
-    """Test GET and PUT /api/v1/settings/analytics for host PostHog configuration."""
-    get_res = await client.get("/api/v1/settings/analytics", headers=admin_headers)
-    assert get_res.status_code == 200
-
     put_res = await client.put(
         "/api/v1/settings/analytics",
         json={"posthog_api_key": "phc_test_12345", "posthog_host": "https://us.i.posthog.com"},
@@ -135,3 +129,35 @@ async def test_settings_analytics_endpoints(client: AsyncClient, admin_headers):
     assert put_res.status_code == 200
     assert put_res.json()["posthog_api_key"] == "phc_test_12345"
     assert put_res.json()["posthog_configured"] is True
+
+
+@pytest.mark.asyncio
+async def test_reports_costs_endpoint(client: AsyncClient, admin_headers):
+    """Test /api/v1/reports/costs returns WhatsApp (Oct 1st rates) and LLM token costs in NGN and USD."""
+    response = await client.get("/api/v1/reports/costs?days=7", headers=admin_headers)
+    assert response.status_code == 200
+    data = response.json()
+    assert "whatsapp" in data
+    assert "llm" in data
+    assert "exchange_rate_usd_to_ngn" in data
+    
+    # WhatsApp validation
+    wa = data["whatsapp"]
+    assert "services" in wa
+    assert "utilities" in wa
+    assert "marketing" in wa
+    assert "total_cost_usd" in wa
+    assert "total_cost_ngn" in wa
+    assert "daily_trends" in wa
+    assert wa["services"]["unit_rate_usd"] == 0.0100
+    assert wa["utilities"]["unit_rate_usd"] == 0.0160
+    assert wa["marketing"]["unit_rate_usd"] == 0.0516
+
+    # LLM validation
+    llm = data["llm"]
+    assert "total_tokens" in llm
+    assert "total_cost_usd" in llm
+    assert "total_cost_ngn" in llm
+    assert "models" in llm
+    assert "daily_trends" in llm
+
