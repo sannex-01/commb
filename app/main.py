@@ -42,6 +42,7 @@ from app.api.conversations import router as conversations_router
 from app.api.system import router as system_router
 from app.api.reports import router as reports_router
 from app.api.orders import router as orders_router
+from app.api.cloud_stats import router as cloud_stats_router
 
 WIDGET_BUNDLE_PATH = os.path.join(os.path.dirname(__file__), "..", "widget", "dist", "widget.js")
 ADMIN_DIST_DIR = os.path.join(os.path.dirname(__file__), "admin_ui", "dist")
@@ -235,6 +236,7 @@ app.include_router(conversations_router, prefix="/api/v1")
 app.include_router(system_router, prefix="/api/v1")
 app.include_router(reports_router, prefix="/api/v1")
 app.include_router(orders_router, prefix="/api/v1")
+app.include_router(cloud_stats_router, prefix="/api/v1")
 
 
 
